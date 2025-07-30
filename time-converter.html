@@ -1,0 +1,1481 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Time Converter</title>
+<style>
+  .time-converter-root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #3f37c9;
+  --background-color: #f8fafc;
+  --card-color: #ffffff;
+  --text-color: #1e293b;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --border-radius: 10px;
+  --input-radius: 8px;
+  --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+  --transition: all 0.3s ease;
+}
+
+.time-converter-root * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.time-converter-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 0;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.time-converter-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.time-converter-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+.time-converter-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.time-converter-form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.time-converter-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.time-converter-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-color);
+}
+
+.time-converter-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.time-converter-input-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.time-converter-input-group > div {
+  flex: 1;
+}
+
+.time-converter-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: var(--input-radius);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(63, 55, 201, 0.15);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.time-converter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.time-converter-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--secondary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(63, 55, 201, 0.2);
+}
+
+.time-converter-btn:hover::before {
+  left: 100%;
+}
+
+.time-converter-btn:active {
+  transform: translateY(0);
+}
+
+.time-converter-result {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background-color: rgba(67, 97, 238, 0.05);
+  border-radius: var(--input-radius);
+  border-left: 4px solid var(--primary-color);
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.time-converter-result.show {
+  display: block;
+}
+
+.time-converter-result p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.time-converter-formula {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.formula-steps {
+  margin-top: 0.5rem;
+}
+
+.formula-step {
+  margin-bottom: 0.75rem;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+}
+
+.step-number {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-right: 0.25rem;
+}
+
+.step-desc {
+  margin-right: 0.5rem;
+}
+
+.step-formula {
+  font-family: monospace;
+  background-color: rgba(67, 97, 238, 0.08);
+  padding: 0.2rem 0.4rem;
+  border-radius: 4px;
+}
+
+.unit-note {
+  margin-top: 0.75rem;
+  font-size: 0.85rem;
+  color: var(--text-light);
+  padding: 0.6rem;
+  background-color: rgba(255, 247, 237, 0.7);
+  border-left: 3px solid #f97316;
+  border-radius: 4px;
+}
+
+.time-converter-history {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.time-converter-history-title {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.time-converter-history-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.time-converter-history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.time-converter-history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.time-converter-history-list::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.time-converter-history-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.time-converter-history-item {
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  transition: var(--transition);
+  border-radius: 6px;
+}
+
+.time-converter-history-item:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+  transform: translateX(5px);
+}
+
+.time-converter-history-item:last-child {
+  border-bottom: none;
+}
+
+.time-converter-history-empty {
+  text-align: center;
+  padding: 1.5rem;
+  color: var(--text-light);
+  font-style: italic;
+}
+
+.history-item-time {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.history-item-conversion {
+  font-weight: 500;
+  flex: 1;
+  margin-right: 1rem;
+}
+
+.history-item-actions {
+  display: flex;
+  gap: 0.5rem;
+}
+
+.history-item-apply {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  border: none;
+  padding: 0.4rem 0.75rem;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 0.8rem;
+  font-weight: 500;
+}
+
+.history-item-apply:hover {
+  background-color: var(--primary-color);
+  color: white;
+}
+
+.history-item-delete {
+  background-color: rgba(239, 68, 68, 0.1);
+  color: var(--error-color);
+  border: none;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  transition: var(--transition);
+  font-size: 1rem;
+  font-weight: bold;
+}
+
+.history-item-delete:hover {
+  background-color: var(--error-color);
+  color: white;
+}
+
+.time-converter-clear-history {
+  margin-top: 1rem;
+  color: #e74c3c;
+  background: none;
+  border: 1px solid #e74c3c;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  transition: var(--transition);
+  display: block;
+  width: 100%;
+  font-weight: 500;
+}
+
+.time-converter-clear-history:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Custom dropdown styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-selected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+  color: var(--text-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown-selected:hover {
+  border-color: #cbd5e1;
+}
+
+.custom-dropdown-selected:focus,
+.custom-dropdown-selected.active {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.custom-dropdown-selected::after {
+  content: '⌄';
+  font-size: 1.2rem;
+  color: var(--text-light);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown-selected.active::after {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 var(--input-radius) var(--input-radius);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: var(--box-shadow);
+  margin-top: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.custom-dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-dropdown-option:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+.custom-dropdown-option.selected {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.custom-dropdown-categories {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-dropdown-search {
+  padding: 0.75rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.custom-dropdown-search input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+}
+
+.custom-dropdown-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: none;
+  font-weight: 500;
+  animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.time-converter-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .time-converter-wrapper {
+    padding: 1.5rem;
+  }
+
+  .time-converter-input-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .time-converter-card, 
+  .time-converter-history {
+    padding: 1.5rem;
+  }
+
+  .time-converter-history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .history-item-conversion {
+    margin-bottom: 0.5rem;
+    width: 100%;
+    margin-right: 0;
+  }
+
+  .history-item-actions {
+    align-self: flex-end;
+    margin-top: -25px;
+  }
+
+  .time-converter-btn {
+    padding: 0.85rem 1.25rem;
+  }
+  
+  .formula-step {
+    flex-direction: column;
+    gap: 0.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .time-converter-wrapper {
+    padding: 1rem;
+  }
+  
+  .time-converter-card, 
+  .time-converter-history {
+    padding: 1.25rem;
+  }
+
+  .time-converter-label {
+    font-size: 0.9rem;
+  }
+
+  .time-converter-input, 
+  .custom-dropdown-selected {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .history-item-actions {
+    display: flex;
+    width: 100%;
+    justify-content: flex-end;
+    margin-top: 0.5rem;
+  }
+  
+  .history-item-apply {
+    flex: 1;
+  }
+}
+</style>
+</head>
+<body>
+  <div class="time-converter-root">
+    <div class="time-converter-wrapper">
+      <h1 class="time-converter-title">Time Converter</h1>
+      <div class="time-converter-card">
+        <div class="time-converter-input-group">
+          <div class="time-converter-form-group">
+            <label class="time-converter-label" for="from-unit">From</label>
+            <div class="custom-dropdown" id="from-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="from-unit-selected">Seconds (s)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="time-converter-form-group">
+            <label class="time-converter-label" for="to-unit">To</label>
+            <div class="custom-dropdown" id="to-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="to-unit-selected">Minutes (min)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="time-converter-input-group">
+          <div class="time-converter-form-group">
+            <label class="time-converter-label" for="input-value">Enter Value</label>
+            <input type="number" class="time-converter-input" id="input-value" step="any" placeholder="Enter a number">
+            <div id="input-error" class="error-message">Please enter a valid number</div>
+          </div>
+          
+          <div class="time-converter-form-group">
+            <label class="time-converter-label" for="decimal-places">Decimal Places</label>
+            <div class="custom-dropdown" id="decimal-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="decimal-places-selected">2</div>
+              <div class="custom-dropdown-options">
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="convert-btn" class="time-converter-btn">Convert</button>
+        
+        <div id="result" class="time-converter-result">
+          <p id="result-text"></p>
+          <div id="formula" class="time-converter-formula"></div>
+        </div>
+      </div>
+      
+      <div class="time-converter-history">
+        <h3 class="time-converter-history-title">Conversion History</h3>
+        <div id="history-list" class="time-converter-history-list"></div>
+        <button id="clear-history" class="time-converter-clear-history">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // Get DOM elements
+  const fromUnitSelected = document.getElementById('from-unit-selected');
+  const toUnitSelected = document.getElementById('to-unit-selected');
+  const decimalPlacesSelected = document.getElementById('decimal-places-selected');
+  const inputValue = document.getElementById('input-value');
+  const convertBtn = document.getElementById('convert-btn');
+  const resultDiv = document.getElementById('result');
+  const resultText = document.getElementById('result-text');
+  const formulaText = document.getElementById('formula');
+  const historyList = document.getElementById('history-list');
+  const clearHistoryBtn = document.getElementById('clear-history');
+  
+  // Load conversion history from localStorage
+  let conversionHistory = JSON.parse(localStorage.getItem('timeConverterHistory')) || [];
+  
+  // Add error event listener
+  inputValue.addEventListener('input', function() {
+    const errorElement = document.getElementById('input-error');
+    inputValue.classList.remove('error');
+    errorElement.style.display = 'none';
+  });
+
+  // Organize units by categories
+  const unitCategories = {
+    'Standard': [
+      { code: 'ns', name: 'Nanoseconds (ns)' },
+      { code: 'us', name: 'Microseconds (μs)' },
+      { code: 'ms', name: 'Milliseconds (ms)' },
+      { code: 's', name: 'Seconds (s)' },
+      { code: 'min', name: 'Minutes (min)' },
+      { code: 'h', name: 'Hours (h)' },
+      { code: 'd', name: 'Days (d)' },
+      { code: 'wk', name: 'Weeks (wk)' },
+      { code: 'mo', name: 'Months (30 days)' },
+      { code: 'yr', name: 'Years (365 days)' },
+      { code: 'dec', name: 'Decades' },
+      { code: 'cent', name: 'Centuries' },
+      { code: 'mill', name: 'Millennia' }
+    ],
+    'Astronomical': [
+      { code: 'sidereal_d', name: 'Sidereal day (23.93 hours)' },
+      { code: 'sidereal_yr', name: 'Sidereal year (365.256 days)' },
+      { code: 'lunar_mo', name: 'Lunar month (29.53 days)' },
+      { code: 'lunar_yr', name: 'Lunar year (354.37 days)' },
+      { code: 'sol', name: 'Martian sol (24.6597 hours)' },
+      { code: 'venus_d', name: 'Venusian day (243 Earth days)' },
+      { code: 'jupiter_yr', name: 'Jupiter year (11.86 Earth years)' },
+      { code: 'earth_orbit', name: 'Earth orbit time (1 year)' },
+      { code: 'light_minute', name: 'Light-minute' },
+      { code: 'light_hour', name: 'Light-hour' },
+      { code: 'light_day', name: 'Light-day' },
+      { code: 'light_yr', name: 'Light-year' }
+    ],
+    'Physics & Scientific': [
+      { code: 'planck', name: 'Planck time (5.39×10^-44 s)' },
+      { code: 'atomic', name: 'Atomic unit of time (2.42×10^-17 s)' },
+      { code: 'shake', name: 'Shake (10 ns)' },
+      { code: 'jiffy_e', name: 'Jiffy (electronics: 1/60 s)' },
+      { code: 'jiffy_q', name: 'Jiffy (quantum physics: 10^-23 s)' },
+      { code: 'vacuum_light', name: 'Light travel time in vacuum (1m)' }
+    ],
+    'Computing': [
+      { code: 'cpu_cycle', name: 'CPU cycle (3 GHz)' },
+      { code: 'cpu_cycle_1ghz', name: 'CPU cycle (1 GHz)' },
+      { code: 'clock_cycle', name: 'Clock cycle' },
+      { code: 'machine_cycle', name: 'Machine cycle' },
+      { code: 'instruction', name: 'Instruction time' },
+      { code: 'refresh', name: 'Screen refresh (60 Hz)' },
+      { code: 'ping', name: 'Internet ping (avg: 50 ms)' }
+    ],
+    'Historical': [
+      { code: 'moment', name: 'Medieval moment (90s)' },
+      { code: 'fortnight', name: 'Fortnight (14 days)' },
+      { code: 'score', name: 'Score (20 years)' },
+      { code: 'olympiad', name: 'Olympiad (4 years)' },
+      { code: 'indiction', name: 'Indiction (15 years, Roman)' },
+      { code: 'lustrum', name: 'Lustrum (5 years, Roman)' },
+      { code: 'jubilee', name: 'Jubilee (50 years)' },
+      { code: 'generation', name: 'Generation (25 years)' }
+    ],
+    'Alternate Calendars': [
+      { code: 'mayan_kin', name: 'Mayan Kin (1 day)' },
+      { code: 'mayan_uinal', name: 'Mayan Uinal (20 days)' },
+      { code: 'mayan_tun', name: 'Mayan Tun (360 days)' },
+      { code: 'mayan_katun', name: 'Mayan Katun (7,200 days)' },
+      { code: 'mayan_baktun', name: 'Mayan Baktun (144,000 days)' },
+      { code: 'chinese_yr', name: 'Chinese year (lunar)' },
+      { code: 'islamic_yr', name: 'Islamic year (354 or 355 days)' },
+      { code: 'hebrew_yr', name: 'Hebrew year (lunar)' }
+    ],
+    'Time Notation': [
+      { code: 'unix', name: 'UNIX time (seconds since 1970)' },
+      { code: 'gps', name: 'GPS time (seconds since 1980)' },
+      { code: 'tai', name: 'TAI seconds' },
+      { code: 'utc', name: 'UTC seconds' },
+      { code: 'iso8601', name: 'ISO 8601 duration' },
+      { code: 'julian_day', name: 'Julian day' },
+      { code: 'modified_jd', name: 'Modified Julian day' }
+    ],
+    'Business & Finance': [
+      { code: 'fiscal_yr', name: 'Fiscal year' },
+      { code: 'fiscal_quarter', name: 'Fiscal quarter' },
+      { code: 'fiscal_mo', name: 'Fiscal month' },
+      { code: 'business_d', name: 'Business day' },
+      { code: 'work_wk', name: 'Work week (40 hours)' },
+      { code: 'overtime_hour', name: 'Overtime hour' },
+      { code: 'man_hour', name: 'Man-hour' },
+      { code: 'man_day', name: 'Man-day (8 hours)' },
+      { code: 'man_yr', name: 'Man-year (2080 hours)' }
+    ],
+    'Natural Phenomena': [
+      { code: 'heartbeat', name: 'Human heartbeat (1s)' },
+      { code: 'breath', name: 'Human breath (4s)' },
+      { code: 'blink', name: 'Eye blink (0.1s)' },
+      { code: 'circadian', name: 'Circadian cycle (24h)' },
+      { code: 'gestation', name: 'Human gestation period (266 days)' },
+      { code: 'life_span', name: 'Human life expectancy (72 years)' },
+      { code: 'cell_division', name: 'Cell division time (24h)' },
+      { code: 'hummingbird', name: 'Hummingbird wingbeat (50 per second)' }
+    ]
+  };
+
+  // Base conversion factors to seconds (SI unit)
+  const toSeconds = {
+    // Standard
+    ns: 1e-9, // nanosecond
+    us: 1e-6, // microsecond
+    ms: 1e-3, // millisecond
+    s: 1, // second (base unit)
+    min: 60, // minute
+    h: 3600, // hour
+    d: 86400, // day
+    wk: 604800, // week
+    mo: 2592000, // month (30 days)
+    yr: 31536000, // year (365 days)
+    dec: 315360000, // decade
+    cent: 3153600000, // century
+    mill: 31536000000, // millennium
+    
+    // Astronomical
+    sidereal_d: 86164.1, // sidereal day
+    sidereal_yr: 31558150, // sidereal year
+    lunar_mo: 2551443, // lunar month
+    lunar_yr: 30617314, // lunar year
+    sol: 88775.244, // Martian sol
+    venus_d: 20995200, // Venusian day
+    jupiter_yr: 374247600, // Jupiter year
+    earth_orbit: 31536000, // Earth orbit time
+    light_minute: 60, // light-minute
+    light_hour: 3600, // light-hour
+    light_day: 86400, // light-day
+    light_yr: 31536000, // light-year (time-wise, not distance)
+    
+    // Physics & Scientific
+    planck: 5.39e-44, // Planck time
+    atomic: 2.42e-17, // atomic unit of time
+    shake: 1e-8, // shake (nuclear physics)
+    jiffy_e: 0.01667, // jiffy (electronics)
+    jiffy_q: 1e-23, // jiffy (quantum physics)
+    vacuum_light: 3.33564e-9, // light travel time in vacuum (1m)
+    
+    // Computing
+    cpu_cycle: 3.33e-10, // CPU cycle at 3 GHz
+    cpu_cycle_1ghz: 1e-9, // CPU cycle at 1 GHz
+    clock_cycle: 1e-9, // typical clock cycle
+    machine_cycle: 4e-9, // typical machine cycle
+    instruction: 1e-8, // typical instruction time
+    refresh: 0.01667, // 60 Hz refresh rate
+    ping: 0.05, // average internet ping
+    
+    // Historical
+    moment: 90, // medieval moment
+    fortnight: 1209600, // fortnight
+    score: 630720000, // score
+    olympiad: 126144000, // olympiad
+    indiction: 473040000, // indiction
+    lustrum: 157680000, // lustrum
+    jubilee: 1576800000, // jubilee
+    generation: 788400000, // generation
+    
+    // Alternate Calendars
+    mayan_kin: 86400, // Mayan Kin
+    mayan_uinal: 1728000, // Mayan Uinal
+    mayan_tun: 31104000, // Mayan Tun
+    mayan_katun: 622080000, // Mayan Katun
+    mayan_baktun: 12441600000, // Mayan Baktun
+    chinese_yr: 31536000, // Chinese year (approximation)
+    islamic_yr: 30617314, // Islamic year (approximation)
+    hebrew_yr: 30617314, // Hebrew year (approximation)
+    
+    // Time Notation
+    unix: 1, // UNIX time
+    gps: 1, // GPS time
+    tai: 1, // TAI seconds
+    utc: 1, // UTC seconds
+    iso8601: 1, // ISO 8601 duration (base in seconds)
+    julian_day: 86400, // Julian day
+    modified_jd: 86400, // Modified Julian day
+    
+    // Business & Finance
+    fiscal_yr: 31536000, // fiscal year
+    fiscal_quarter: 7884000, // fiscal quarter
+    fiscal_mo: 2628000, // fiscal month
+    business_d: 28800, // business day (8 hours)
+    work_wk: 144000, // work week (40 hours)
+    overtime_hour: 3600, // overtime hour
+    man_hour: 3600, // man-hour
+    man_day: 28800, // man-day
+    man_yr: 7488000, // man-year
+    
+    // Natural Phenomena
+    heartbeat: 1, // human heartbeat
+    breath: 4, // human breath
+    blink: 0.1, // eye blink
+    circadian: 86400, // circadian cycle
+    gestation: 22982400, // human gestation period
+    life_span: 2271024000, // human life expectancy
+    cell_division: 86400, // cell division time
+    hummingbird: 0.02 // hummingbird wingbeat
+  };
+
+  // Names for units (long form)
+  const unitNames = {
+    // Standard
+    ns: "nanoseconds",
+    us: "microseconds",
+    ms: "milliseconds",
+    s: "seconds",
+    min: "minutes",
+    h: "hours",
+    d: "days",
+    wk: "weeks",
+    mo: "months",
+    yr: "years",
+    dec: "decades",
+    cent: "centuries",
+    mill: "millennia",
+    
+    // Astronomical
+    sidereal_d: "sidereal days",
+    sidereal_yr: "sidereal years",
+    lunar_mo: "lunar months",
+    lunar_yr: "lunar years",
+    sol: "Martian sols",
+    venus_d: "Venusian days",
+    jupiter_yr: "Jupiter years",
+    earth_orbit: "Earth orbit times",
+    light_minute: "light-minutes",
+    light_hour: "light-hours",
+    light_day: "light-days",
+    light_yr: "light-years",
+    
+    // Physics & Scientific
+    planck: "Planck times",
+    atomic: "atomic time units",
+    shake: "shakes",
+    jiffy_e: "electronic jiffies",
+    jiffy_q: "quantum jiffies",
+    vacuum_light: "light travel times (1m)",
+    
+    // Computing
+    cpu_cycle: "CPU cycles (3 GHz)",
+    cpu_cycle_1ghz: "CPU cycles (1 GHz)",
+    clock_cycle: "clock cycles",
+    machine_cycle: "machine cycles",
+    instruction: "instruction times",
+    refresh: "screen refreshes",
+    ping: "internet pings",
+    
+    // Historical
+    moment: "medieval moments",
+    fortnight: "fortnights",
+    score: "scores",
+    olympiad: "olympiads",
+    indiction: "indictions",
+    lustrum: "lustra",
+    jubilee: "jubilees",
+    generation: "generations",
+    
+    // Alternate Calendars
+    mayan_kin: "Mayan Kins",
+    mayan_uinal: "Mayan Uinals",
+    mayan_tun: "Mayan Tuns",
+    mayan_katun: "Mayan Katuns",
+    mayan_baktun: "Mayan Baktuns",
+    chinese_yr: "Chinese years",
+    islamic_yr: "Islamic years",
+    hebrew_yr: "Hebrew years",
+    
+    // Time Notation
+    unix: "UNIX seconds",
+    gps: "GPS seconds",
+    tai: "TAI seconds",
+    utc: "UTC seconds",
+    iso8601: "ISO 8601 durations",
+    julian_day: "Julian days",
+    modified_jd: "Modified Julian days",
+    
+    // Business & Finance
+    fiscal_yr: "fiscal years",
+    fiscal_quarter: "fiscal quarters",
+    fiscal_mo: "fiscal months",
+    business_d: "business days",
+    work_wk: "work weeks",
+    overtime_hour: "overtime hours",
+    man_hour: "man-hours",
+    man_day: "man-days",
+    man_yr: "man-years",
+    
+    // Natural Phenomena
+    heartbeat: "heartbeats",
+    breath: "breaths",
+    blink: "blinks",
+    circadian: "circadian cycles",
+    gestation: "gestation periods",
+    life_span: "human lifespans",
+    cell_division: "cell division cycles",
+    hummingbird: "hummingbird wingbeats"
+  };
+
+  // Context notes for special units
+  const unitNotes = {
+    planck: "Note: Planck time is the smallest theoretically meaningful unit of time (5.39×10^-44 s).",
+    atomic: "Note: The atomic unit of time is derived from atomic physics constants.",
+    unix: "Note: UNIX time counts seconds since January 1, 1970, 00:00:00 UTC.",
+    gps: "Note: GPS time counts seconds since January 6, 1980, 00:00:00 UTC without leap seconds.",
+    tai: "Note: TAI (International Atomic Time) is the reference time scale based on atomic clocks.",
+    utc: "Note: UTC (Coordinated Universal Time) includes leap seconds to stay synchronized with Earth's rotation.",
+    mo: "Note: Month conversion uses the average of 30 days, which is an approximation.",
+    yr: "Note: Year conversion uses 365 days, not accounting for leap years.",
+    lunar_mo: "Note: Lunar month is approximately 29.53 days.",
+    light_yr: "Note: Light-year is primarily a unit of distance, but here we're converting the time it takes light to travel in one year.",
+    venus_d: "Note: A day on Venus is longer than a year on Venus."
+  };
+
+  // Flattened array of all units
+  const allUnits = Object.values(unitCategories).flat();
+  
+  // Get unit by code
+  function getUnitByCode(code) {
+    return allUnits.find(unit => unit.code === code);
+  }
+
+  // Initialize custom dropdowns
+  initializeDropdowns();
+  
+  // Display existing history
+  displayHistory();
+
+  // Setup custom dropdowns
+  function initializeDropdowns() {
+    // Initialize unit dropdowns
+    const fromDropdown = document.getElementById('from-dropdown');
+    const toDropdown = document.getElementById('to-dropdown');
+    const decimalDropdown = document.getElementById('decimal-dropdown');
+    
+    // Populate unit dropdowns
+    populateUnitDropdown(fromDropdown, 's');
+    populateUnitDropdown(toDropdown, 'min');
+    
+    // Populate decimal places dropdown
+    const decimalOptionsContainer = document.createElement('div');
+    for (let i = 2; i <= 10; i++) {
+      const option = document.createElement('div');
+      option.className = 'custom-dropdown-option';
+      option.dataset.value = i;
+      option.textContent = i.toString();
+      
+      if (i === 2) {
+        option.classList.add('selected');
+      }
+      
+      option.addEventListener('click', function() {
+        decimalPlacesSelected.textContent = this.textContent;
+        decimalPlacesSelected.dataset.value = this.dataset.value;
+        closeAllDropdowns();
+      });
+      
+      decimalOptionsContainer.appendChild(option);
+    }
+    decimalDropdown.querySelector('.custom-dropdown-options').appendChild(decimalOptionsContainer);
+    
+    // Setup dropdown functionality
+    document.querySelectorAll('.custom-dropdown-selected').forEach(element => {
+      element.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const currentDropdown = this.parentElement.querySelector('.custom-dropdown-options');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+          if (dropdown !== currentDropdown) {
+            dropdown.style.display = 'none';
+          }
+        });
+        
+        // Toggle current dropdown
+        if (currentDropdown.style.display === 'block') {
+          currentDropdown.style.display = 'none';
+          this.classList.remove('active');
+        } else {
+          currentDropdown.style.display = 'block';
+          this.classList.add('active');
+          
+          // Focus search input if it exists
+          const searchInput = currentDropdown.querySelector('input');
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.value = ''; // Clear previous search
+          }
+        }
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+      closeAllDropdowns();
+    });
+    
+    // Search functionality
+    document.querySelectorAll('.custom-dropdown-search input').forEach(input => {
+      input.addEventListener('click', e => e.stopPropagation());
+      input.addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        const dropdown = this.closest('.custom-dropdown');
+        const options = dropdown.querySelectorAll('.custom-dropdown-option');
+        const categories = dropdown.querySelectorAll('.custom-dropdown-categories');
+        
+        // Hide all categories first
+        categories.forEach(category => {
+          category.style.display = 'none';
+        });
+        
+        let foundInCategory = {};
+        
+        // Show/hide options based on search
+        options.forEach(option => {
+          const optionText = option.textContent.toLowerCase();
+          if (optionText.includes(searchValue)) {
+            option.style.display = 'block';
+            
+            // Find and track the category this option belongs to
+            let currentElement = option.previousElementSibling;
+            while (currentElement) {
+              if (currentElement.classList.contains('custom-dropdown-categories')) {
+                foundInCategory[currentElement.textContent] = true;
+                break;
+              }
+              currentElement = currentElement.previousElementSibling;
+            }
+          } else {
+            option.style.display = 'none';
+          }
+        });
+        
+        // Show categories that have matching options
+        categories.forEach(category => {
+          if (foundInCategory[category.textContent]) {
+            category.style.display = 'block';
+          }
+        });
+      });
+    });
+  }
+  
+  function populateUnitDropdown(dropdown, selectedUnitCode) {
+    const optionsContainer = dropdown.querySelector('.custom-dropdown-options');
+    const selectedElement = dropdown.querySelector('.custom-dropdown-selected');
+    
+    // Clear existing options (except search box)
+    const searchBox = optionsContainer.querySelector('.custom-dropdown-search');
+    optionsContainer.innerHTML = '';
+    if (searchBox) {
+      optionsContainer.appendChild(searchBox);
+    }
+    
+    // Set initial selected value
+    const selectedUnit = getUnitByCode(selectedUnitCode);
+    if (selectedUnit) {
+      selectedElement.textContent = selectedUnit.name;
+      selectedElement.dataset.value = selectedUnit.code;
+    }
+    
+    // Add categories and units
+    Object.keys(unitCategories).forEach(category => {
+      const units = unitCategories[category];
+      
+      // Add category header
+      const categoryElement = document.createElement('div');
+      categoryElement.className = 'custom-dropdown-categories';
+      categoryElement.textContent = category;
+      optionsContainer.appendChild(categoryElement);
+      
+      // Add units in this category
+      units.forEach(unit => {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.dataset.value = unit.code;
+        option.textContent = unit.name;
+        
+        if (unit.code === selectedUnitCode) {
+          option.classList.add('selected');
+        }
+        
+        option.addEventListener('click', function() {
+          selectedElement.textContent = this.textContent;
+          selectedElement.dataset.value = this.dataset.value;
+          
+          // Update selected class
+          dropdown.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          this.classList.add('selected');
+          
+          closeAllDropdowns();
+        });
+        
+        optionsContainer.appendChild(option);
+      });
+    });
+  }
+  
+  // Close all dropdowns function
+  function closeAllDropdowns() {
+    document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+      dropdown.style.display = 'none';
+      
+      // Reset search and filters when closing
+      const searchInput = dropdown.querySelector('.custom-dropdown-search input');
+      if (searchInput) {
+        searchInput.value = '';
+        resetUnitVisibility(dropdown);
+      }
+    });
+    
+    document.querySelectorAll('.custom-dropdown-selected').forEach(selected => {
+      selected.classList.remove('active');
+    });
+  }
+  
+  // Reset unit visibility
+  function resetUnitVisibility(dropdown) {
+    // Show all categories
+    dropdown.querySelectorAll('.custom-dropdown-categories').forEach(category => {
+      category.style.display = 'block';
+    });
+    
+    // Show all options
+    dropdown.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.style.display = 'block';
+    });
+  }
+  
+  // Add event listeners
+  convertBtn.addEventListener('click', performConversion);
+  clearHistoryBtn.addEventListener('click', clearHistory);
+  inputValue.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      performConversion();
+    }
+  });
+  
+  // Format display of very large or very small numbers
+  function formatNumber(number, decimalPlaces) {
+    // For values close to zero that would show as just 0 with fixed precision
+    if (Math.abs(number) > 0 && Math.abs(number) < Math.pow(10, -decimalPlaces)) {
+      return number.toExponential(decimalPlaces);
+    }
+    
+    // For very large numbers
+    if (Math.abs(number) >= 1e9) {
+      return number.toExponential(decimalPlaces);
+    }
+    
+    // For regular numbers
+    return number.toFixed(decimalPlaces);
+  }
+  
+  // Function to perform conversion with high precision
+  function performConversion() {
+    const input = parseFloat(inputValue.value);
+    const errorElement = document.getElementById('input-error');
+    
+    if (isNaN(input)) {
+      inputValue.classList.add('error');
+      errorElement.style.display = 'block';
+      return;
+    } else {
+      inputValue.classList.remove('error');
+      errorElement.style.display = 'none';
+    }
+
+    const from = fromUnitSelected.dataset.value;
+    const to = toUnitSelected.dataset.value;
+    const places = parseInt(decimalPlacesSelected.dataset.value || 2);
+    
+    // For maximum precision, convert via base unit (seconds)
+    // input → seconds → output
+    const seconds = input * toSeconds[from];
+    const result = seconds / toSeconds[to];
+    
+    // Check for NaN or Infinity
+    if (isNaN(result) || !isFinite(result)) {
+      resultText.textContent = "Conversion error - Please check the conversion factors";
+      formulaText.textContent = "Make sure all units have proper conversion factors defined";
+      resultDiv.classList.add('show');
+      return;
+    }
+    
+    // Format the result with appropriate decimal places or scientific notation
+    const formattedResult = formatNumber(result, places);
+    
+    // Generate formula text
+    const formulaHtml = generateFormulaText(from, to, input, formattedResult);
+    
+    resultText.textContent = `${input} ${unitNames[from] || from} = ${formattedResult} ${unitNames[to] || to}`;
+    formulaText.innerHTML = formulaHtml;
+    
+    // Show result section
+    resultDiv.classList.add('show');
+    
+    // Add this conversion to history
+    addToHistory(input, from, to, formattedResult);
+  }
+  
+  // Generate formula display
+  function generateFormulaText(from, to, input, result) {
+    // Get conversion factors
+    const fromFactor = toSeconds[from];
+    const toFactor = toSeconds[to];
+    
+    // Generate formula
+    let formula = '';
+    
+    if (from === to) {
+      formula = `${input} ${unitNames[from]} = ${result} ${unitNames[to]}`;
+    } else {
+      formula = `
+        <div class="formula-steps">
+          <div class="formula-step">
+            <span class="step-number">1.</span>
+            <span class="step-desc">Convert ${unitNames[from]} to seconds:</span>
+            <span class="step-formula">${input} × ${scientificNotation(fromFactor)} = ${scientificNotation(input * fromFactor)} seconds</span>
+          </div>
+          <div class="formula-step">
+            <span class="step-number">2.</span>
+            <span class="step-desc">Convert seconds to ${unitNames[to]}:</span>
+            <span class="step-formula">${scientificNotation(input * fromFactor)} ÷ ${scientificNotation(toFactor)} = ${result} ${unitNames[to]}</span>
+          </div>
+        </div>
+      `;
+      
+      // Add special notes for certain units if they exist
+      if (unitNotes[from]) {
+        formula += `<div class="unit-note">${unitNotes[from]}</div>`;
+      }
+      if (unitNotes[to] && from !== to) {
+        formula += `<div class="unit-note">${unitNotes[to]}</div>`;
+      }
+    }
+    
+    return formula;
+  }
+  
+  // Format number in scientific notation when appropriate
+  function scientificNotation(number) {
+    if (Math.abs(number) < 0.001 || Math.abs(number) >= 1000000) {
+      // Format very small or very large numbers in scientific notation
+      return number.toExponential(6);
+    }
+    return number.toFixed(6);
+  }
+  
+  // Add conversion to history
+  function addToHistory(input, from, to, result) {
+    const fromUnitName = getUnitByCode(from).name;
+    const toUnitName = getUnitByCode(to).name;
+    
+    const historyItem = {
+      timestamp: new Date().getTime(),
+      input: input,
+      from: from,
+      fromName: fromUnitName,
+      to: to,
+      toName: toUnitName,
+      result: result
+    };
+    
+    // Add to beginning of array
+    conversionHistory.unshift(historyItem);
+    
+    // Limit history to 100 items
+    if (conversionHistory.length > 100) {
+      conversionHistory.pop();
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('timeConverterHistory', JSON.stringify(conversionHistory));
+    
+    // Display updated history
+    displayHistory();
+  }
+  
+  // Display conversion history
+  function displayHistory() {
+    historyList.innerHTML = '';
+    
+    if (conversionHistory.length === 0) {
+      const emptyMsg = document.createElement('div');
+      emptyMsg.className = 'time-converter-history-empty';
+      emptyMsg.textContent = 'No conversion history yet';
+      historyList.appendChild(emptyMsg);
+      return;
+    }
+    
+    conversionHistory.forEach((item, index) => {
+      const historyCard = document.createElement('div');
+      historyCard.className = 'time-converter-history-item';
+      
+      // Create date string
+      const date = new Date(item.timestamp);
+      const dateString = formatDate(date);
+      
+      historyCard.innerHTML = `
+        <div class="history-item-time">${dateString}</div>
+        <div class="history-item-conversion">
+          ${item.input} ${item.fromName} = ${item.result} ${item.toName}
+        </div>
+        <div class="history-item-actions">
+          <button class="history-item-apply" data-index="${index}">Apply</button>
+          <button class="history-item-delete" data-index="${index}">×</button>
+        </div>
+      `;
+      
+      historyList.appendChild(historyCard);
+    });
+    
+    // Add event listeners for history buttons
+    document.querySelectorAll('.history-item-apply').forEach(button => {
+      button.addEventListener('click', function() {
+        const index = parseInt(this.dataset.index);
+        applyHistoryItem(index);
+      });
+    });
+    
+    document.querySelectorAll('.history-item-delete').forEach(button => {
+      button.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const index = parseInt(this.dataset.index);
+        deleteHistoryItem(index);
+      });
+    });
+  }
+  
+  // Format date for history items
+  function formatDate(date) {
+    const now = new Date();
+    const isToday = date.getDate() === now.getDate() && 
+                    date.getMonth() === now.getMonth() && 
+                    date.getFullYear() === now.getFullYear();
+    
+    if (isToday) {
+      return `Today at ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    } else {
+      return `${date.getMonth() + 1}/${date.getDate()}/${date.getFullYear()} ${date.getHours().toString().padStart(2, '0')}:${date.getMinutes().toString().padStart(2, '0')}`;
+    }
+  }
+  
+  // Apply a history item
+  function applyHistoryItem(index) {
+    const item = conversionHistory[index];
+    
+    // Set values from history
+    fromUnitSelected.textContent = item.fromName;
+    fromUnitSelected.dataset.value = item.from;
+    
+    toUnitSelected.textContent = item.toName;
+    toUnitSelected.dataset.value = item.to;
+    
+    inputValue.value = item.input;
+    
+    // Perform conversion
+    performConversion();
+    
+    // Scroll to top
+    window.scrollTo({
+      top: 0,
+      behavior: 'smooth'
+    });
+  }
+  
+  // Delete a history item
+  function deleteHistoryItem(index) {
+    conversionHistory.splice(index, 1);
+    localStorage.setItem('timeConverterHistory', JSON.stringify(conversionHistory));
+    displayHistory();
+  }
+  
+  // Clear all history
+  function clearHistory() {
+    if (conversionHistory.length === 0) return;
+    
+    if (confirm('Are you sure you want to clear all conversion history?')) {
+      conversionHistory = [];
+      localStorage.setItem('timeConverterHistory', JSON.stringify(conversionHistory));
+      displayHistory();
+    }
+  }
+  
+});
+</script>
+</body>
+</html>
