@@ -2,8 +2,8 @@
 
 *Author: **Piyush Kumar***
 
-![Area Converter Screenshot](screenshots/area-converter-main.png)
-![Area Converter History](screenshots/area-converter-history.png)
+![Area Converter Screenshot](https://github.com/piyush-kumar499/Converter-tools/blob/aba54562be79696a6eb5da00592ebe192f973d19/Area%20Converter/IMG_20250730_082250.jpg)
+![Area Converter History](https://github.com/piyush-kumar499/Converter-tools/blob/aba54562be79696a6eb5da00592ebe192f973d19/Area%20Converter/Screenshot_2025-07-30-08-22-26-22_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 ## 📖 Overview
 
