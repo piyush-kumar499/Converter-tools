@@ -2,8 +2,8 @@
 
 *Author: **Piyush Kumar***
 
-![Temperature Converter Screenshot](screenshots/temperature-converter-main.png)
-![Temperature Converter History](screenshots/temperature-converter-history.png)
+![Temperature Converter Screenshot]([screenshots/temperature-converter-main.png](https://github.com/piyush-kumar499/Converter-tools/blob/da2a884038aa3a6a86831263bbf1d03dff7015c5/Temperature%20Converter/IMG_20250730_081623.jpg))
+![Temperature Converter History](https://github.com/piyush-kumar499/Converter-tools/blob/da2a884038aa3a6a86831263bbf1d03dff7015c5/Temperature%20Converter/Screenshot_2025-07-30-08-15-37-60_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 ## 📖 Overview
 
