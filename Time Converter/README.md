@@ -1,7 +1,7 @@
 # Time Converter
 
-![Time Converter Screenshot](screenshots/time-converter-main.png)
-![Time Conversion Example](screenshots/time-converter-result.png)
+![Time Converter Screenshot](https://github.com/piyush-kumar499/Converter-tools/blob/67b16a9b743667a1b259ca3848ed60d7a11f9b1e/Time%20Converter/IMG_20250730_152958.jpg)
+![Time Conversion Example](https://github.com/piyush-kumar499/Converter-tools/blob/67b16a9b743667a1b259ca3848ed60d7a11f9b1e/Time%20Converter/Screenshot_2025-07-30-15-30-20-85_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 A comprehensive web-based time unit converter that supports over 60+ different time units across multiple categories including standard units, astronomical time, physics & scientific units, computing time, historical measurements, and more.
 
