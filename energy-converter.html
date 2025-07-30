@@ -1,0 +1,1438 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <style>
+  .energy-converter-root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #3f37c9;
+  --background-color: #f8fafc;
+  --card-color: #ffffff;
+  --text-color: #1e293b;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --border-radius: 8px;
+  --input-radius: 6px;
+  --box-shadow: 0 8px 12px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --card-shadow: 0 16px 20px -5px rgba(0, 0, 0, 0.05), 0 8px 8px -5px rgba(0, 0, 0, 0.01);
+  --transition: all 0.3s ease;
+}
+
+.energy-converter-root * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.energy-converter-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.5;
+  padding: 0;
+  max-width: 850px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+  gap: 1.5rem;
+}
+
+.energy-converter-title {
+  text-align: center;
+  margin-bottom: 1.5rem;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: 2rem;
+  position: relative;
+  padding-bottom: 0.75rem;
+}
+
+.energy-converter-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 70px;
+  height: 3px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+.energy-converter-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.energy-converter-form-group {
+  margin-bottom: 1.25rem;
+  position: relative;
+  flex: 1;
+}
+
+.energy-converter-label {
+  display: block;
+  margin-bottom: 0.5rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.9rem;
+}
+
+.energy-converter-input {
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.95rem;
+  transition: var(--transition);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-color);
+}
+
+.energy-converter-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.energy-converter-input-group {
+  display: flex;
+  gap: 1.25rem;
+  margin-bottom: 1.25rem;
+}
+
+.energy-converter-scientific-notation {
+  margin-bottom: 1.25rem;
+}
+
+.energy-converter-checkbox-label {
+  display: flex;
+  align-items: center;
+  cursor: pointer;
+  font-size: 0.9rem;
+  color: var(--text-color);
+}
+
+.energy-converter-checkbox-label input[type="checkbox"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+  accent-color: var(--primary-color);
+}
+
+.energy-converter-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: var(--input-radius);
+  padding: 0.85rem 1.25rem;
+  font-size: 0.95rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(63, 55, 201, 0.15);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.energy-converter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.energy-converter-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--secondary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(63, 55, 201, 0.2);
+}
+
+.energy-converter-btn:hover::before {
+  left: 100%;
+}
+
+.energy-converter-btn:active {
+  transform: translateY(0);
+}
+
+.energy-converter-result {
+  margin-top: 1.25rem;
+  padding: 1rem;
+  background-color: rgba(67, 97, 238, 0.05);
+  border-radius: var(--input-radius);
+  border-left: 4px solid var(--primary-color);
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.energy-converter-result.show {
+  display: block;
+}
+
+.energy-converter-result p {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.energy-converter-formula {
+  font-size: 0.85rem;
+  color: var(--text-light);
+  margin-top: 0.6rem;
+  padding-top: 0.6rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.energy-converter-history {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.25rem;
+  border: 1px solid var(--border-color);
+}
+
+.energy-converter-history-title {
+  margin-bottom: 0.85rem;
+  color: var(--text-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.6rem;
+  position: relative;
+}
+
+.energy-converter-history-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 50px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.energy-converter-history-list {
+  max-height: 280px;
+  overflow-y: auto;
+  padding-right: 0.4rem;
+  margin-bottom: 0.85rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.energy-converter-history-list::-webkit-scrollbar {
+  width: 5px;
+}
+
+.energy-converter-history-list::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 8px;
+}
+
+.energy-converter-history-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 8px;
+}
+
+.energy-converter-history-item {
+  padding: 0.85rem;
+  border-bottom: 1px solid var(--border-color);
+  position: relative;
+  transition: var(--transition);
+  border-radius: 5px;
+}
+
+.energy-converter-history-item:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+  transform: translateX(4px);
+}
+
+.energy-converter-history-item:last-child {
+  border-bottom: none;
+}
+
+.energy-converter-history-empty {
+  text-align: center;
+  color: var(--text-light);
+  padding: 1.25rem 0;
+  font-style: italic;
+}
+
+.energy-converter-history-item p {
+  margin-bottom: 0.4rem;
+  font-weight: 500;
+}
+
+.energy-converter-history-date {
+  font-size: 0.75rem;
+  color: var(--text-light);
+  display: block;
+  margin-top: 0.3rem;
+}
+
+.energy-converter-history-actions {
+  position: absolute;
+  top: 0.85rem;
+  right: 0.85rem;
+  display: flex;
+  gap: 0.5rem;
+}
+
+.energy-converter-history-reload,
+.energy-converter-history-delete {
+  background: none;
+  border: none;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  transition: var(--transition);
+}
+
+.energy-converter-history-reload {
+  color: var(--primary-color);
+  background-color: rgba(67, 97, 238, 0.1);
+}
+
+.energy-converter-history-reload:hover {
+  background-color: rgba(67, 97, 238, 0.2);
+}
+
+.energy-converter-history-delete {
+  color: var(--error-color);
+  background-color: rgba(239, 68, 68, 0.1);
+  font-size: 1.2rem;
+  font-weight: bold;
+}
+
+.energy-converter-history-delete:hover {
+  background-color: rgba(239, 68, 68, 0.2);
+}
+
+.reload-icon {
+  font-size: 0.9rem;
+  font-weight: bold;
+}
+
+.energy-converter-clear-history {
+  background: none;
+  border: 1px solid var(--error-color);
+  color: var(--error-color);
+  width: 100%;
+  padding: 0.6rem 1.15rem;
+  border-radius: var(--input-radius);
+  font-size: 0.85rem;
+  font-weight: 500;
+  cursor: pointer;
+  transition: var(--transition);
+}
+
+.energy-converter-clear-history:hover {
+  background-color: var(--error-color);
+  color: white;
+}
+
+/* Custom dropdown styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-selected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.75rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: white;
+  cursor: pointer;
+  font-size: 0.95rem;
+  transition: var(--transition);
+  color: var(--text-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown-selected:hover {
+  border-color: #cbd5e1;
+}
+
+.custom-dropdown-selected:focus,
+.custom-dropdown-selected.active {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.custom-dropdown-selected::after {
+  content: '⌄';
+  font-size: 1.1rem;
+  color: var(--text-light);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown-selected.active::after {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 var(--input-radius) var(--input-radius);
+  z-index: 100;
+  max-height: 280px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: var(--box-shadow);
+  margin-top: 4px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.custom-dropdown-options::-webkit-scrollbar {
+  width: 5px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 8px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 8px;
+}
+
+.custom-dropdown-option {
+  padding: 0.65rem 0.85rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-dropdown-option:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+.custom-dropdown-option.selected {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.custom-dropdown-categories {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.65rem 0.85rem;
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.8rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-dropdown-search {
+  padding: 0.65rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.custom-dropdown-search input {
+  width: 100%;
+  padding: 0.55rem 0.75rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.85rem;
+}
+
+.custom-dropdown-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.8rem;
+  margin-top: 0.4rem;
+  display: none;
+  font-weight: 500;
+  animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.energy-converter-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .energy-converter-wrapper {
+    padding: 1.25rem;
+    gap: 1.25rem;
+  }
+
+  .energy-converter-input-group {
+    flex-direction: column;
+    gap: 0.85rem;
+  }
+  
+  .energy-converter-card, 
+  .energy-converter-history {
+    padding: 1.25rem;
+  }
+
+  .energy-converter-history-actions {
+    position: static;
+    margin-top: 0.5rem;
+    justify-content: flex-end;
+  }
+  
+  .energy-converter-history-item p {
+    margin-right: 0;
+    padding-right: 0;
+  }
+
+  .energy-converter-btn {
+    padding: 0.75rem 1.15rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .energy-converter-wrapper {
+    padding: 0.85rem;
+    gap: 0.85rem;
+  }
+  
+  .energy-converter-card, 
+  .energy-converter-history {
+    padding: 1.15rem;
+  }
+
+  .energy-converter-label {
+    font-size: 0.85rem;
+  }
+
+  .energy-converter-input, 
+  .custom-dropdown-selected {
+    padding: 0.65rem;
+    font-size: 0.9rem;
+  }
+  
+  .energy-converter-result p {
+    font-size: 1.05rem;
+  }
+  
+  .energy-converter-formula {
+    font-size: 0.8rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="energy-converter-root">
+    <div class="energy-converter-wrapper">
+      <h1 class="energy-converter-title">Energy Converter</h1>
+      <div class="energy-converter-card">
+        <div class="energy-converter-input-group">
+          <div class="energy-converter-form-group">
+            <label class="energy-converter-label" for="from-unit">From</label>
+            <div class="custom-dropdown" id="from-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="from-unit-selected">Joule (J)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="energy-converter-form-group">
+            <label class="energy-converter-label" for="to-unit">To</label>
+            <div class="custom-dropdown" id="to-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="to-unit-selected">Kilowatt Hour (kWh)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="energy-converter-input-group">
+          <div class="energy-converter-form-group">
+            <label class="energy-converter-label" for="input-value">Enter Value</label>
+            <input type="number" class="energy-converter-input" id="input-value" step="any" placeholder="Enter a number">
+            <div id="input-error" class="error-message">Please enter a valid number</div>
+          </div>
+          
+          <div class="energy-converter-form-group">
+            <label class="energy-converter-label" for="decimal-places">Decimal Places</label>
+            <div class="custom-dropdown" id="decimal-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="decimal-places-selected">4</div>
+              <div class="custom-dropdown-options">
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="energy-converter-scientific-notation">
+          <label class="energy-converter-checkbox-label">
+            <input type="checkbox" id="scientific-notation-checkbox"> 
+            Use scientific notation for very large/small numbers
+          </label>
+        </div>
+        
+        <button id="convert-btn" class="energy-converter-btn">Convert</button>
+        
+        <div id="result" class="energy-converter-result">
+          <p id="result-text"></p>
+          <div id="formula" class="energy-converter-formula"></div>
+        </div>
+      </div>
+      
+      <div class="energy-converter-history">
+        <h3 class="energy-converter-history-title">Conversion History</h3>
+        <div id="history-list" class="energy-converter-history-list"></div>
+        <button id="clear-history" class="energy-converter-clear-history">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+    // Get DOM elements
+    const fromUnitSelected = document.getElementById('from-unit-selected');
+    const toUnitSelected = document.getElementById('to-unit-selected');
+    const decimalPlacesSelected = document.getElementById('decimal-places-selected');
+    const inputValue = document.getElementById('input-value');
+    const convertBtn = document.getElementById('convert-btn');
+    const resultDiv = document.getElementById('result');
+    const resultText = document.getElementById('result-text');
+    const formulaText = document.getElementById('formula');
+    const historyList = document.getElementById('history-list');
+    const clearHistoryBtn = document.getElementById('clear-history');
+    const scientificNotationCheckbox = document.getElementById('scientific-notation-checkbox');
+    
+    // Load conversion history from localStorage
+    let conversionHistory = JSON.parse(localStorage.getItem('energyConverterHistory')) || [];
+    
+    // Add error event listener
+    inputValue.addEventListener('input', function() {
+      const errorElement = document.getElementById('input-error');
+      inputValue.classList.remove('error');
+      errorElement.style.display = 'none';
+    });
+
+    // Organize energy units by categories
+    const unitCategories = {
+      'SI Units': [
+        { code: 'joule', name: 'Joule (J)' },
+        { code: 'kilojoule', name: 'Kilojoule (kJ)' },
+        { code: 'megajoule', name: 'Megajoule (MJ)' },
+        { code: 'gigajoule', name: 'Gigajoule (GJ)' },
+        { code: 'terajoule', name: 'Terajoule (TJ)' }
+      ],
+      'Electrical': [
+        { code: 'watt_hour', name: 'Watt Hour (Wh)' },
+        { code: 'kilowatt_hour', name: 'Kilowatt Hour (kWh)' },
+        { code: 'megawatt_hour', name: 'Megawatt Hour (MWh)' },
+        { code: 'gigawatt_hour', name: 'Gigawatt Hour (GWh)' },
+        { code: 'volt_ampere_hour', name: 'Volt-Ampere Hour (VAh)' }
+      ],
+      'Thermal': [
+        { code: 'calorie', name: 'Calorie (cal)' },
+        { code: 'kilocalorie', name: 'Kilocalorie (kcal)' },
+        { code: 'british_thermal_unit', name: 'British Thermal Unit (BTU)' },
+        { code: 'therm_us', name: 'Therm (US)' },
+        { code: 'therm_eu', name: 'Therm (EU)' }
+      ],
+      'Mechanical': [
+        { code: 'foot_pound', name: 'Foot-Pound (ft⋅lb)' },
+        { code: 'inch_pound', name: 'Inch-Pound (in⋅lb)' },
+        { code: 'newton_meter', name: 'Newton Meter (N⋅m)' },
+        { code: 'horsepower_hour', name: 'Horsepower Hour (hp⋅h)' }
+      ],
+      'Food & Nutrition': [
+        { code: 'food_calorie', name: 'Food Calorie (Cal)' },
+        { code: 'kilojoule_food', name: 'Kilojoule (kJ) - Food' }
+      ],
+      'Nuclear & Atomic': [
+        { code: 'electron_volt', name: 'Electron Volt (eV)' },
+        { code: 'kiloelectron_volt', name: 'Kiloelectron Volt (keV)' },
+        { code: 'megaelectron_volt', name: 'Megaelectron Volt (MeV)' },
+        { code: 'gigaelectron_volt', name: 'Gigaelectron Volt (GeV)' },
+        { code: 'tnt_ton', name: 'TNT Ton' },
+        { code: 'tnt_kiloton', name: 'TNT Kiloton' },
+        { code: 'tnt_megaton', name: 'TNT Megaton' }
+      ],
+      'Fuel & Industry': [
+        { code: 'barrel_oil', name: 'Barrel of Oil Equivalent (BOE)' },
+        { code: 'ton_coal', name: 'Ton of Coal Equivalent (TCE)' },
+        { code: 'ton_oil', name: 'Ton of Oil Equivalent (TOE)' },
+        { code: 'cubic_feet_natural_gas', name: 'Cubic Feet of Natural Gas' }
+      ],
+      'Other Units': [
+        { code: 'erg', name: 'Erg' },
+        { code: 'quadrillion_btu', name: 'Quadrillion BTU (quad)' },
+        { code: 'hartree', name: 'Hartree (atomic unit of energy)' },
+        { code: 'rydberg', name: 'Rydberg' }
+      ]
+    };
+
+    // Names for units (long form)
+    const unitNames = {
+      joule: "joules",
+      kilojoule: "kilojoules",
+      megajoule: "megajoules",
+      gigajoule: "gigajoules",
+      terajoule: "terajoules",
+      watt_hour: "watt hours",
+      kilowatt_hour: "kilowatt hours",
+      megawatt_hour: "megawatt hours",
+      gigawatt_hour: "gigawatt hours",
+      volt_ampere_hour: "volt-ampere hours",
+      calorie: "calories",
+      kilocalorie: "kilocalories",
+      british_thermal_unit: "British thermal units",
+      therm_us: "therms (US)",
+      therm_eu: "therms (EU)",
+      foot_pound: "foot-pounds",
+      inch_pound: "inch-pounds",
+      newton_meter: "newton meters",
+      horsepower_hour: "horsepower hours",
+      food_calorie: "food calories",
+      kilojoule_food: "kilojoules (food)",
+      electron_volt: "electron volts",
+      kiloelectron_volt: "kiloelectron volts",
+      megaelectron_volt: "megaelectron volts",
+      gigaelectron_volt: "gigaelectron volts",
+      tnt_ton: "tons of TNT",
+      tnt_kiloton: "kilotons of TNT",
+      tnt_megaton: "megatons of TNT",
+      barrel_oil: "barrels of oil equivalent",
+      ton_coal: "tons of coal equivalent",
+      ton_oil: "tons of oil equivalent",
+      cubic_feet_natural_gas: "cubic feet of natural gas",
+      erg: "ergs",
+      quadrillion_btu: "quadrillion BTUs",
+      hartree: "hartrees",
+      rydberg: "rydbergs"
+    };
+
+    // Symbols for units (short form)
+    const unitSymbols = {
+      joule: "J",
+      kilojoule: "kJ",
+      megajoule: "MJ",
+      gigajoule: "GJ",
+      terajoule: "TJ",
+      watt_hour: "Wh",
+      kilowatt_hour: "kWh",
+      megawatt_hour: "MWh",
+      gigawatt_hour: "GWh",
+      volt_ampere_hour: "VAh",
+      calorie: "cal",
+      kilocalorie: "kcal",
+      british_thermal_unit: "BTU",
+      therm_us: "therm",
+      therm_eu: "therm",
+      foot_pound: "ft⋅lb",
+      inch_pound: "in⋅lb",
+      newton_meter: "N⋅m",
+      horsepower_hour: "hp⋅h",
+      food_calorie: "Cal",
+      kilojoule_food: "kJ",
+      electron_volt: "eV",
+      kiloelectron_volt: "keV",
+      megaelectron_volt: "MeV",
+      gigaelectron_volt: "GeV",
+      tnt_ton: "t TNT",
+      tnt_kiloton: "kt TNT",
+      tnt_megaton: "Mt TNT",
+      barrel_oil: "BOE",
+      ton_coal: "TCE",
+      ton_oil: "TOE",
+      cubic_feet_natural_gas: "cf",
+      erg: "erg",
+      quadrillion_btu: "quad",
+      hartree: "Eh",
+      rydberg: "Ry"
+    };
+
+    // Flattened array of all units
+    const allUnits = Object.values(unitCategories).flat();
+    
+    // Get unit by code
+    function getUnitByCode(code) {
+      return allUnits.find(unit => unit.code === code);
+    }
+
+    // Initialize custom dropdowns
+    initializeDropdowns();
+    
+    // Display existing history
+    displayHistory();
+
+    // Setup custom dropdowns
+    function initializeDropdowns() {
+      // Initialize unit dropdowns
+      const fromDropdown = document.getElementById('from-dropdown');
+      const toDropdown = document.getElementById('to-dropdown');
+      const decimalDropdown = document.getElementById('decimal-dropdown');
+      
+      // Populate unit dropdowns
+      populateUnitDropdown(fromDropdown, 'joule');
+      populateUnitDropdown(toDropdown, 'kilowatt_hour');
+      
+      // Populate decimal places dropdown
+      const decimalOptionsContainer = document.createElement('div');
+      for (let i = 0; i <= 10; i++) {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.dataset.value = i;
+        option.textContent = i.toString();
+        
+        if (i === 4) {
+          option.classList.add('selected');
+        }
+        
+        option.addEventListener('click', function() {
+          decimalPlacesSelected.textContent = this.textContent;
+          decimalPlacesSelected.dataset.value = this.dataset.value;
+          closeAllDropdowns();
+        });
+        
+        decimalOptionsContainer.appendChild(option);
+      }
+      decimalDropdown.querySelector('.custom-dropdown-options').appendChild(decimalOptionsContainer);
+      
+      // Setup dropdown functionality
+      document.querySelectorAll('.custom-dropdown-selected').forEach(element => {
+        element.addEventListener('click', function(e) {
+          e.stopPropagation();
+          const currentDropdown = this.parentElement.querySelector('.custom-dropdown-options');
+          
+          // Close all other dropdowns
+          document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+            if (dropdown !== currentDropdown) {
+              dropdown.style.display = 'none';
+            }
+          });
+          
+          // Toggle current dropdown
+          if (currentDropdown.style.display === 'block') {
+            currentDropdown.style.display = 'none';
+            this.classList.remove('active');
+          } else {
+            currentDropdown.style.display = 'block';
+            this.classList.add('active');
+            
+            // Focus search input if it exists
+            const searchInput = currentDropdown.querySelector('input');
+            if (searchInput) {
+              searchInput.focus();
+              searchInput.value = ''; // Clear previous search
+            }
+          }
+        });
+      });
+      
+      // Close dropdowns when clicking outside
+      document.addEventListener('click', function() {
+        closeAllDropdowns();
+      });
+      
+      // Search functionality
+      document.querySelectorAll('.custom-dropdown-search input').forEach(input => {
+        input.addEventListener('click', e => e.stopPropagation());
+        input.addEventListener('input', function() {
+          const searchValue = this.value.toLowerCase();
+          const dropdown = this.closest('.custom-dropdown');
+          const options = dropdown.querySelectorAll('.custom-dropdown-option');
+          const categories = dropdown.querySelectorAll('.custom-dropdown-categories');
+          
+          // Hide all categories first
+          categories.forEach(category => {
+            category.style.display = 'none';
+          });
+          
+          let foundInCategory = {};
+          
+          // Show/hide options based on search
+          options.forEach(option => {
+            const optionText = option.textContent.toLowerCase();
+            if (optionText.includes(searchValue)) {
+              option.style.display = 'block';
+              
+              // Find and track the category this option belongs to
+              let currentElement = option.previousElementSibling;
+              while (currentElement) {
+                if (currentElement.classList.contains('custom-dropdown-categories')) {
+                  foundInCategory[currentElement.textContent] = true;
+                  break;
+                }
+                currentElement = currentElement.previousElementSibling;
+              }
+            } else {
+              option.style.display = 'none';
+            }
+          });
+          
+          // Show categories that have matching options
+          categories.forEach(category => {
+            if (foundInCategory[category.textContent]) {
+              category.style.display = 'block';
+            }
+          });
+        });
+      });
+    }
+    
+    function populateUnitDropdown(dropdown, selectedUnitCode) {
+      const optionsContainer = dropdown.querySelector('.custom-dropdown-options');
+      const selectedElement = dropdown.querySelector('.custom-dropdown-selected');
+      
+      // Clear existing options (except search box)
+      const searchBox = optionsContainer.querySelector('.custom-dropdown-search');
+      optionsContainer.innerHTML = '';
+      if (searchBox) {
+        optionsContainer.appendChild(searchBox);
+      }
+      
+      // Set initial selected value
+      const selectedUnit = getUnitByCode(selectedUnitCode);
+      if (selectedUnit) {
+        selectedElement.textContent = selectedUnit.name;
+        selectedElement.dataset.value = selectedUnit.code;
+      }
+      
+      // Add categories and units
+      Object.keys(unitCategories).forEach(category => {
+        const units = unitCategories[category];
+        
+        // Add category header
+        const categoryElement = document.createElement('div');
+        categoryElement.className = 'custom-dropdown-categories';
+        categoryElement.textContent = category;
+        optionsContainer.appendChild(categoryElement);
+        
+        // Add units in this category
+        units.forEach(unit => {
+          const option = document.createElement('div');
+          option.className = 'custom-dropdown-option';
+          option.dataset.value = unit.code;
+          option.textContent = unit.name;
+          
+          if (unit.code === selectedUnitCode) {
+            option.classList.add('selected');
+          }
+          
+          option.addEventListener('click', function() {
+            selectedElement.textContent = this.textContent;
+            selectedElement.dataset.value = this.dataset.value;
+            
+            // Update selected class
+            dropdown.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+              opt.classList.remove('selected');
+            });
+            this.classList.add('selected');
+            
+            closeAllDropdowns();
+          });
+          
+          optionsContainer.appendChild(option);
+        });
+      });
+    }
+    
+    // Close all dropdowns function
+    function closeAllDropdowns() {
+      document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+        dropdown.style.display = 'none';
+        
+        // Reset search and filters when closing
+        const searchInput = dropdown.querySelector('.custom-dropdown-search input');
+        if (searchInput) {
+          searchInput.value = '';
+          resetUnitVisibility(dropdown);
+        }
+      });
+      
+      document.querySelectorAll('.custom-dropdown-selected').forEach(selected => {
+        selected.classList.remove('active');
+      });
+    }
+    
+    // Reset unit visibility
+    function resetUnitVisibility(dropdown) {
+      // Show all categories
+      dropdown.querySelectorAll('.custom-dropdown-categories').forEach(category => {
+        category.style.display = 'block';
+      });
+      
+      // Show all options
+      dropdown.querySelectorAll('.custom-dropdown-option').forEach(option => {
+        option.style.display = 'block';
+      });
+    }
+    
+    // Add event listeners
+    convertBtn.addEventListener('click', performConversion);
+    clearHistoryBtn.addEventListener('click', clearHistory);
+    inputValue.addEventListener('keypress', function(e) {
+      if (e.key === 'Enter') {
+        performConversion();
+      }
+    });
+    
+    // Energy conversion functions
+    
+    // Convert any energy unit to joules (our base unit)
+    function toJoules(value, unit) {
+      switch(unit) {
+        // SI Units
+        case 'joule':
+          return value;
+        case 'kilojoule':
+          return value * 1000;
+        case 'megajoule':
+          return value * 1e6;
+        case 'gigajoule':
+          return value * 1e9;
+        case 'terajoule':
+          return value * 1e12;
+          
+        // Electrical
+        case 'watt_hour':
+          return value * 3600;
+        case 'kilowatt_hour':
+          return value * 3.6e6;
+        case 'megawatt_hour':
+          return value * 3.6e9;
+        case 'gigawatt_hour':
+          return value * 3.6e12;
+        case 'volt_ampere_hour':
+          return value * 3600; // Assuming power factor of 1
+          
+        // Thermal
+        case 'calorie':
+          return value * 4.184;
+        case 'kilocalorie':
+          return value * 4184;
+        case 'british_thermal_unit':
+          return value * 1055.06;
+        case 'therm_us':
+          return value * 1.05506e8;
+        case 'therm_eu':
+          return value * 1.05506e8 * 1.05587; // EU therm is slightly larger
+          
+        // Mechanical
+        case 'foot_pound':
+          return value * 1.35582;
+        case 'inch_pound':
+          return value * 0.112985;
+        case 'newton_meter':
+          return value * 1; // Same as joule
+        case 'horsepower_hour':
+          return value * 2.6845e6;
+          
+        // Food & Nutrition
+        case 'food_calorie':
+          return value * 4184; // Food calorie = kilocalorie
+        case 'kilojoule_food':
+          return value * 1000;
+          
+        // Nuclear & Atomic
+        case 'electron_volt':
+          return value * 1.602176634e-19;
+        case 'kiloelectron_volt':
+          return value * 1.602176634e-16;
+        case 'megaelectron_volt':
+          return value * 1.602176634e-13;
+        case 'gigaelectron_volt':
+          return value * 1.602176634e-10;
+        case 'tnt_ton':
+          return value * 4.184e9;
+        case 'tnt_kiloton':
+          return value * 4.184e12;
+        case 'tnt_megaton':
+          return value * 4.184e15;
+          
+        // Fuel & Industry
+        case 'barrel_oil':
+          return value * 6.1178632e9; // About 1700 kWh
+        case 'ton_coal':
+          return value * 2.93076e10; // About 8140 kWh
+        case 'ton_oil':
+          return value * 4.1868e10; // About 11630 kWh
+        case 'cubic_feet_natural_gas':
+          return value * 1.055e6; // Approximately 1055 kJ
+          
+        // Other Units
+        case 'erg':
+          return value * 1e-7;
+        case 'quadrillion_btu':
+          return value * 1.055e18;
+        case 'hartree':
+          return value * 4.3597447222071e-18;
+        case 'rydberg':
+          return value * 2.1798723611035e-18;
+          
+        default:
+          return value; // Default to assuming it's already joules
+      }
+    }
+    
+    // Convert from joules to any unit
+    function fromJoules(value, unit) {
+      switch(unit) {
+        // SI Units
+        case 'joule':
+          return value;
+        case 'kilojoule':
+          return value / 1000;
+        case 'megajoule':
+          return value / 1e6;
+        case 'gigajoule':
+          return value / 1e9;
+        case 'terajoule':
+          return value / 1e12;
+          
+        // Electrical
+        case 'watt_hour':
+          return value / 3600;
+        case 'kilowatt_hour':
+          return value / 3.6e6;
+        case 'megawatt_hour':
+          return value / 3.6e9;
+        case 'gigawatt_hour':
+          return value / 3.6e12;
+        case 'volt_ampere_hour':
+          return value / 3600; // Assuming power factor of 1
+          
+        // Thermal
+        case 'calorie':
+          return value / 4.184;
+        case 'kilocalorie':
+          return value / 4184;
+        case 'british_thermal_unit':
+          return value / 1055.06;
+        case 'therm_us':
+          return value / 1.05506e8;
+        case 'therm_eu':
+          return value / (1.05506e8 * 1.05587);
+          
+        // Mechanical
+        case 'foot_pound':
+          return value / 1.35582;
+        case 'inch_pound':
+          return value / 0.112985;
+        case 'newton_meter':
+          return value / 1; // Same as joule
+        case 'horsepower_hour':
+          return value / 2.6845e6;
+          
+        // Food & Nutrition
+        case 'food_calorie':
+          return value / 4184;
+        case 'kilojoule_food':
+          return value / 1000;
+          
+        // Nuclear & Atomic
+        case 'electron_volt':
+          return value / 1.602176634e-19;
+        case 'kiloelectron_volt':
+          return value / 1.602176634e-16;
+        case 'megaelectron_volt':
+          return value / 1.602176634e-13;
+        case 'gigaelectron_volt':
+          return value / 1.602176634e-10;
+        case 'tnt_ton':
+          return value / 4.184e9;
+        case 'tnt_kiloton':
+          return value / 4.184e12;
+        case 'tnt_megaton':
+          return value / 4.184e15;
+          
+        // Fuel & Industry  
+        case 'barrel_oil':
+          return value / 6.1178632e9;
+        case 'ton_coal':
+          return value / 2.93076e10;
+        case 'ton_oil':
+          return value / 4.1868e10;
+        case 'cubic_feet_natural_gas':
+          return value / 1.055e6;
+          
+        // Other Units
+        case 'erg':
+          return value / 1e-7;
+        case 'quadrillion_btu':
+          return value / 1.055e18;
+        case 'hartree':
+          return value / 4.3597447222071e-18;
+        case 'rydberg':
+          return value / 2.1798723611035e-18;
+          
+        default:
+          return value; // Default to returning joules
+      }
+    }
+    
+    // Format numbers appropriately (with scientific notation when needed)
+    function formatNumber(num, decimalPlaces, useScientific) {
+      // Check for very large or very small numbers
+      const absNum = Math.abs(num);
+      
+      if (useScientific && (absNum > 1e9 || (absNum < 1e-9 && absNum > 0))) {
+        return num.toExponential(decimalPlaces);
+      } else {
+        return num.toFixed(decimalPlaces);
+      }
+    }
+    
+    // Function to perform energy conversion
+    function performConversion() {
+      const input = parseFloat(inputValue.value);
+      const errorElement = document.getElementById('input-error');
+      
+      if (isNaN(input)) {
+        inputValue.classList.add('error');
+        errorElement.style.display = 'block';
+        return;
+      } else {
+        inputValue.classList.remove('error');
+        errorElement.style.display = 'none';
+      }
+
+      const from = fromUnitSelected.dataset.value;
+      const to = toUnitSelected.dataset.value;
+      const places = parseInt(decimalPlacesSelected.dataset.value || 4);
+      const useScientific = scientificNotationCheckbox.checked;
+      
+      try {
+        const joules = toJoules(input, from);
+        const result = fromJoules(joules, to);
+        
+        // Check for NaN or Infinity
+        if (isNaN(result) || !isFinite(result)) {
+          resultText.textContent = "Conversion error - Please check the conversion";
+          formulaText.textContent = "Energy calculation error";
+          resultDiv.classList.add('show');
+          return;
+        }
+        
+        // Format with requested decimal places and scientific notation if needed
+        const formattedResult = formatNumber(result, places, useScientific);
+        
+        // Generate formula text
+        const formulaHtml = generateFormulaText(from, to, input, formattedResult, joules, useScientific);
+        
+        resultText.textContent = `${input} ${unitNames[from] || from} = ${formattedResult} ${unitNames[to] || to}`;
+        formulaText.innerHTML = `Formula: ${formulaHtml}`;
+        resultDiv.classList.add('show');
+        
+        // Add to history
+        const historyItem = {
+          date: new Date().toLocaleString(),
+          from: input,
+          fromUnit: unitNames[from] || from,
+          fromCode: from,
+          to: formattedResult,
+          toUnit: unitNames[to] || to,
+          toCode: to
+        };
+        
+        // Add to beginning of array
+        conversionHistory.unshift(historyItem);
+        
+        // Keep only the latest 20 items
+        if (conversionHistory.length > 20) {
+          conversionHistory = conversionHistory.slice(0, 20);
+        }
+        
+        // Save to localStorage
+        localStorage.setItem('energyConverterHistory', JSON.stringify(conversionHistory));
+        
+        // Update history display
+        displayHistory();
+      } catch (e) {
+        resultText.textContent = "Conversion error: " + e.message;
+        formulaText.textContent = "Error in energy calculation";
+        resultDiv.classList.add('show');
+      }
+    }
+    
+    // Generate formula text for energy conversions
+    function generateFormulaText(fromUnit, toUnit, inputValue, result, joules, useScientific) {
+      if (fromUnit === toUnit) {
+        return `No conversion needed - units are the same`;
+      }
+      
+      const places = parseInt(decimalPlacesSelected.dataset.value || 4);
+      let formula = '';
+      
+      // Common energy conversion formulas
+      if (fromUnit === 'joule' && toUnit === 'kilowatt_hour') {
+        formula = `kWh = J ÷ 3,600,000 = ${inputValue} ÷ 3,600,000 = ${result}`;
+      } 
+      else if (fromUnit === 'kilowatt_hour' && toUnit === 'joule') {
+        formula = `J = kWh × 3,600,000 = ${inputValue} × 3,600,000 = ${result}`;
+      }
+      else if (fromUnit === 'joule' && toUnit === 'calorie') {
+        formula = `cal = J ÷ 4.184 = ${inputValue} ÷ 4.184 = ${result}`;
+      }
+      else if (fromUnit === 'calorie' && toUnit === 'joule') {
+        formula = `J = cal × 4.184 = ${inputValue} × 4.184 = ${result}`;
+      }
+      else if (fromUnit === 'joule' && toUnit === 'british_thermal_unit') {
+        formula = `BTU = J ÷ 1,055.06 = ${inputValue} ÷ 1,055.06 = ${result}`;
+      }
+      else if (fromUnit === 'british_thermal_unit' && toUnit === 'joule') {
+        formula = `J = BTU × 1,055.06 = ${inputValue} × 1,055.06 = ${result}`;
+      }
+      else if (fromUnit === 'kilowatt_hour' && toUnit === 'british_thermal_unit') {
+        formula = `BTU = kWh × 3,412.14 = ${inputValue} × 3,412.14 = ${result}`;
+      }
+      // If no specific formula matches, use the general conversion through joules
+      else {
+        const fromSymbol = unitSymbols[fromUnit] || fromUnit;
+        const toSymbol = unitSymbols[toUnit] || toUnit;
+        const formattedJoules = formatNumber(joules, places, useScientific);
+        
+        formula = `First convert ${fromSymbol} to joules: ${inputValue} ${fromSymbol} = ${formattedJoules} J<br>
+                  Then convert joules to ${toSymbol}: ${formattedJoules} J = ${result} ${toSymbol}`;
+      }
+      
+      return formula;
+    }
+    
+    // Display conversion history
+    function displayHistory() {
+      historyList.innerHTML = '';
+      
+      if (conversionHistory.length === 0) {
+        const emptyMessage = document.createElement('p');
+        emptyMessage.className = 'energy-converter-history-empty';
+        emptyMessage.textContent = 'No conversion history yet';
+        historyList.appendChild(emptyMessage);
+        clearHistoryBtn.style.display = 'none';
+        return;
+      }
+      
+      clearHistoryBtn.style.display = 'block';
+      
+      conversionHistory.forEach((item, index) => {
+        const historyItem = document.createElement('div');
+        historyItem.className = 'energy-converter-history-item';
+        
+        const historyText = document.createElement('p');
+        historyText.innerHTML = `${item.from} ${item.fromUnit} = ${item.to} ${item.toUnit}`;
+        
+        const historyActions = document.createElement('div');
+        historyActions.className = 'energy-converter-history-actions';
+        
+        const reloadBtn = document.createElement('button');
+        reloadBtn.className = 'energy-converter-history-reload';
+        reloadBtn.innerHTML = '<span class="reload-icon">↻</span>';
+        reloadBtn.title = 'Reload this conversion';
+        
+        reloadBtn.addEventListener('click', function() {
+          // Set input values from history
+          fromUnitSelected.textContent = getUnitByCode(item.fromCode).name;
+          fromUnitSelected.dataset.value = item.fromCode;
+          
+          toUnitSelected.textContent = getUnitByCode(item.toCode).name;
+          toUnitSelected.dataset.value = item.toCode;
+          
+          inputValue.value = item.from;
+          
+          // Trigger conversion
+          performConversion();
+        });
+        
+        const deleteBtn = document.createElement('button');
+        deleteBtn.className = 'energy-converter-history-delete';
+        deleteBtn.innerHTML = '×';
+        deleteBtn.title = 'Delete this item';
+        
+        deleteBtn.addEventListener('click', function() {
+          // Remove from history array
+          conversionHistory.splice(index, 1);
+          
+          // Save to localStorage
+          localStorage.setItem('energyConverterHistory', JSON.stringify(conversionHistory));
+          
+          // Update display
+          displayHistory();
+        });
+        
+        const dateInfo = document.createElement('span');
+        dateInfo.className = 'energy-converter-history-date';
+        dateInfo.textContent = item.date;
+        
+        historyActions.appendChild(reloadBtn);
+        historyActions.appendChild(deleteBtn);
+        
+        historyItem.appendChild(historyText);
+        historyItem.appendChild(dateInfo);
+        historyItem.appendChild(historyActions);
+        
+        historyList.appendChild(historyItem);
+      });
+    }
+    
+    // Clear conversion history
+    function clearHistory() {
+      // Clear array
+      conversionHistory = [];
+      
+      // Clear localStorage
+      localStorage.removeItem('energyConverterHistory');
+      
+      // Update display
+      displayHistory();
+    }
+  });
+  </script>
+</body>
+</html>

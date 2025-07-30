@@ -1,0 +1,1330 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Unit Converter</title>
+  <style>
+.length-converter-root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #3f37c9;
+  --background-color: #f8fafc;
+  --card-color: #ffffff;
+  --text-color: #1e293b;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --border-radius: 10px;
+  --input-radius: 8px;
+  --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+  --transition: all 0.3s ease;
+}
+
+.length-converter-root * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.length-converter-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 0;
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.length-converter-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.length-converter-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+.length-converter-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.length-converter-form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.length-converter-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.length-converter-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-color);
+}
+
+.length-converter-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.length-converter-input-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.length-converter-input-group > div {
+  flex: 1;
+}
+
+.length-converter-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: var(--input-radius);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(63, 55, 201, 0.15);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.length-converter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.length-converter-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--secondary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(63, 55, 201, 0.2);
+}
+
+.length-converter-btn:hover::before {
+  left: 100%;
+}
+
+.length-converter-btn:active {
+  transform: translateY(0);
+}
+
+.length-converter-result {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background-color: rgba(67, 97, 238, 0.05);
+  border-radius: var(--input-radius);
+  border-left: 4px solid var(--primary-color);
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.length-converter-result.show {
+  display: block;
+}
+
+.length-converter-result p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.length-converter-formula {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.length-converter-history {
+  margin-top: 2rem;
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.length-converter-history-title {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.length-converter-history-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.length-converter-history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.length-converter-history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.length-converter-history-list::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.length-converter-history-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.length-converter-history-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: 6px;
+}
+
+.length-converter-history-item:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+  transform: translateX(5px);
+}
+
+.length-converter-history-item:last-child {
+  border-bottom: none;
+}
+
+.length-converter-history-item span {
+  font-weight: 500;
+}
+
+.length-converter-history-item small {
+  color: var(--text-light);
+  font-size: 0.8rem;
+}
+
+.length-converter-clear-history {
+  margin-top: 1rem;
+  color: #e74c3c;
+  background: none;
+  border: 1px solid #e74c3c;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  transition: var(--transition);
+  display: block;
+  width: 100%;
+  font-weight: 500;
+}
+
+.length-converter-clear-history:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Custom dropdown styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-selected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+  color: var(--text-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown-selected:hover {
+  border-color: #cbd5e1;
+}
+
+.custom-dropdown-selected:focus,
+.custom-dropdown-selected.active {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.custom-dropdown-selected::after {
+  content: '⌄';
+  font-size: 1.2rem;
+  color: var(--text-light);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown-selected.active::after {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 var(--input-radius) var(--input-radius);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: var(--box-shadow);
+  margin-top: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.custom-dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-dropdown-option:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+.custom-dropdown-option.selected {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.custom-dropdown-categories {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-dropdown-search {
+  padding: 0.75rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.custom-dropdown-search input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+}
+
+.custom-dropdown-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: none;
+  font-weight: 500;
+  animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.length-converter-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .length-converter-wrapper {
+    padding: 1.5rem;
+  }
+
+  .length-converter-title {
+    font-size: 1.75rem;
+  }
+
+  .length-converter-input-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .length-converter-card, 
+  .length-converter-history {
+    padding: 1.5rem;
+  }
+
+  .length-converter-history-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .length-converter-history-item small {
+    margin-top: 0.5rem;
+    width: 100%;
+  }
+
+  .length-converter-btn {
+    padding: 0.85rem 1.25rem;
+  }
+}
+
+@media (max-width: 480px) {
+  .length-converter-wrapper {
+    padding: 1rem;
+  }
+  
+  .length-converter-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .length-converter-card, 
+  .length-converter-history {
+    padding: 1.25rem;
+  }
+
+  .length-converter-label {
+    font-size: 0.9rem;
+  }
+
+  .length-converter-input, 
+  .custom-dropdown-selected {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="length-converter-root">
+    <div class="length-converter-wrapper">
+      <h1 class="length-converter-title">Weight & Mass Converter</h1>
+      <div class="length-converter-card">
+        <div class="length-converter-input-group">
+          <div class="length-converter-form-group">
+            <label class="length-converter-label" for="from-unit">From</label>
+            <div class="custom-dropdown" id="from-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="from-unit-selected">Meters (m)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="length-converter-form-group">
+            <label class="length-converter-label" for="to-unit">To</label>
+            <div class="custom-dropdown" id="to-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="to-unit-selected">Feet (ft)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="length-converter-input-group">
+          <div class="length-converter-form-group">
+  <label class="length-converter-label" for="input-value">Enter Value</label>
+  <input type="number" class="length-converter-input" id="input-value" step="any" placeholder="Enter a number">
+  <!-- Add this line -->
+  <div id="input-error" class="error-message">Please enter a valid number</div>
+</div>
+          
+          <div class="length-converter-form-group">
+            <label class="length-converter-label" for="decimal-places">Decimal Places</label>
+            <div class="custom-dropdown" id="decimal-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="decimal-places-selected">2</div>
+              <div class="custom-dropdown-options">
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="convert-btn" class="length-converter-btn">Convert</button>
+        
+        <div id="result" class="length-converter-result">
+          <p id="result-text"></p>
+          <div id="formula" class="length-converter-formula"></div>
+        </div>
+      </div>
+      
+      <div class="length-converter-history">
+        <h3 class="length-converter-history-title">Conversion History</h3>
+        <div id="history-list" class="length-converter-history-list"></div>
+        <button id="clear-history" class="length-converter-clear-history">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // Get DOM elements
+  const fromUnitSelected = document.getElementById('from-unit-selected');
+  const toUnitSelected = document.getElementById('to-unit-selected');
+  const decimalPlacesSelected = document.getElementById('decimal-places-selected');
+  const inputValue = document.getElementById('input-value');
+  const convertBtn = document.getElementById('convert-btn');
+  const resultDiv = document.getElementById('result');
+  const resultText = document.getElementById('result-text');
+  const formulaText = document.getElementById('formula');
+  const historyList = document.getElementById('history-list');
+  const clearHistoryBtn = document.getElementById('clear-history');
+  
+  // Load conversion history from localStorage
+  let conversionHistory = JSON.parse(localStorage.getItem('lengthConverterHistory')) || [];
+  
+  // Add this with your other event listeners
+inputValue.addEventListener('input', function() {
+  const errorElement = document.getElementById('input-error');
+  inputValue.classList.remove('error');
+  errorElement.style.display = 'none';
+});
+
+  // Organize units by categories - Expanded version
+  const unitCategories = {
+    'Metric': [
+      { code: 'm', name: 'Meters (m)' },
+      { code: 'km', name: 'Kilometers (km)' },
+      { code: 'dm', name: 'Decimeters (dm)' },
+      { code: 'cm', name: 'Centimeters (cm)' },
+      { code: 'mm', name: 'Millimeters (mm)' },
+      { code: 'μm', name: 'Micrometers (μm)' },
+      { code: 'nm', name: 'Nanometers (nm)' },
+      { code: 'pm', name: 'Picometers (pm)' },
+      { code: 'fm', name: 'Femtometers (fm)' },
+      { code: 'am', name: 'Attometers (am)' },
+      { code: 'zm', name: 'Zeptometers (zm)' },
+      { code: 'ym', name: 'Yoctometers (ym)' },
+      { code: 'Mm', name: 'Megameters (Mm)' },
+      { code: 'Gm', name: 'Gigameters (Gm)' },
+      { code: 'Tm', name: 'Terameters (Tm)' },
+      { code: 'Pm', name: 'Petameters (Pm)' }
+    ],
+    'Imperial & US': [
+      { code: 'ft', name: 'Feet (ft)' },
+      { code: 'in', name: 'Inches (in)' },
+      { code: 'yd', name: 'Yards (yd)' },
+      { code: 'mi', name: 'Miles (mi)' },
+      { code: 'nmi', name: 'Nautical Miles (nmi)' },
+      { code: 'thou', name: 'Thou/Mil (thou)' },
+      { code: 'ftm', name: 'Fathoms (ftm)' },
+      { code: 'cable', name: 'Cable Lengths (cable)' },
+      { code: 'link_us', name: 'Links (US) (link_us)' },
+      { code: 'hh', name: 'Hands (hh)' },
+      { code: 'mil', name: 'Mils (mil)' }
+    ],
+    'Survey & Land': [
+      { code: 'ch', name: 'Chains (ch)' },
+      { code: 'rd', name: 'Rods (rd)' },
+      { code: 'furlong', name: 'Furlongs (furlong)' },
+      { code: 'lea', name: 'Leagues (lea)' },
+      { code: 'link', name: 'Links (Gunter\'s) (link)' },
+      { code: 'survey_ft', name: 'US Survey Feet (survey_ft)' },
+      { code: 'survey_mi', name: 'US Survey Miles (survey_mi)' },
+      { code: 'acre_length', name: 'Acre Length (acre_length)' },
+      { code: 'township', name: 'Township (township)' },
+      { code: 'section', name: 'Section (section)' }
+    ],
+    'Astronomical': [
+      { code: 'AU', name: 'Astronomical Units (AU)' },
+      { code: 'ly', name: 'Light Years (ly)' },
+      { code: 'pc', name: 'Parsecs (pc)' },
+      { code: 'kpc', name: 'Kiloparsecs (kpc)' },
+      { code: 'Mpc', name: 'Megaparsecs (Mpc)' },
+      { code: 'Gpc', name: 'Gigaparsecs (Gpc)' },
+      { code: 'lm', name: 'Light Minutes (lm)' },
+      { code: 'ls', name: 'Light Seconds (ls)' },
+      { code: 'lh', name: 'Light Hours (lh)' },
+      { code: 'ld', name: 'Light Days (ld)' },
+      { code: 'lw', name: 'Light Weeks (lw)' },
+      { code: 'lmo', name: 'Light Months (lmo)' },
+      { code: 'lunar_dist', name: 'Lunar Distances (lunar_dist)' },
+      { code: 'earth_radius', name: 'Earth Radii (earth_radius)' },
+      { code: 'solar_radius', name: 'Solar Radii (solar_radius)' }
+    ],
+    'Ancient & Historical': [
+      { code: 'cubit', name: 'Cubits (cubit)' },
+      { code: 'hand', name: 'Hands (hand)' },
+      { code: 'span', name: 'Spans (span)' },
+      { code: 'ell', name: 'Ells (ell)' },
+      { code: 'pace', name: 'Paces (pace)' },
+      { code: 'roman_ft', name: 'Roman Feet (roman_ft)' },
+      { code: 'roman_mi', name: 'Roman Miles (roman_mi)' },
+      { code: 'stadium', name: 'Stadia (stadium)' },
+      { code: 'actus', name: 'Actus (actus)' },
+      { code: 'parasang', name: 'Parasangs (parasang)' },
+      { code: 'digit', name: 'Digits (digit)' },
+      { code: 'palm', name: 'Palms (palm)' },
+      { code: 'greek_cubit', name: 'Greek Cubits (greek_cubit)' },
+      { code: 'fathom_ancient', name: 'Ancient Fathoms (fathom_ancient)' },
+      { code: 'reed', name: 'Reeds (reed)' }
+    ],
+    'Typography & Digital': [
+      { code: 'pt', name: 'Points (pt)' },
+      { code: 'pica', name: 'Picas (pica)' },
+      { code: 'twip', name: 'Twips (twip)' },
+      { code: 'pixel', name: 'Pixels (px, 96 DPI)' },
+      { code: 'pixel_hdpi', name: 'Pixels (px, 300 DPI)' },
+      { code: 'didot', name: 'Didot Points (didot)' },
+      { code: 'cicero', name: 'Ciceros (cicero)' },
+      { code: 'point_hp', name: 'PostScript Points (point_hp)' },
+      { code: 'em', name: 'Em (em, 16px reference)' },
+      { code: 'rem', name: 'Rem (rem, 16px reference)' }
+    ],
+    'Maritime & Navigation': [
+      { code: 'fath', name: 'Fathoms (fath)' },
+      { code: 'cable_length', name: 'Cable Lengths (cable_length)' },
+      { code: 'shot', name: 'Shots (shot)' },
+      { code: 'league_naut', name: 'Nautical Leagues (league_naut)' },
+      { code: 'mark_twain', name: 'Mark Twains (mark_twain)' },
+      { code: 'boat_length', name: 'Boat Lengths (boat_length)' }
+    ],
+    'Japanese': [
+      { code: 'shaku', name: 'Shaku (shaku)' },
+      { code: 'sun', name: 'Sun (sun)' },
+      { code: 'bu', name: 'Bu (bu)' },
+      { code: 'rin', name: 'Rin (rin)' },
+      { code: 'ken', name: 'Ken (ken)' },
+      { code: 'cho', name: 'Chō (cho)' },
+      { code: 'ri', name: 'Ri (ri)' }
+    ],
+    'Chinese': [
+      { code: 'cun', name: 'Cun (cun)' },
+      { code: 'chi', name: 'Chi (chi)' },
+      { code: 'zhang', name: 'Zhang (zhang)' },
+      { code: 'li_chinese', name: 'Li (li_chinese)' },
+      { code: 'fen', name: 'Fen (fen)' }
+    ],
+    'Sports': [
+      { code: 'football_field', name: 'Football Fields (football_field)' },
+      { code: 'cricket_pitch', name: 'Cricket Pitches (cricket_pitch)' },
+      { code: 'tennis_court', name: 'Tennis Courts (tennis_court)' },
+      { code: 'marathon', name: 'Marathons (marathon)' },
+      { code: 'olympic_pool', name: 'Olympic Pools (olympic_pool)' }
+    ]
+  };
+
+  // Base conversion factors to meters (SI unit)
+  const toMeters = {
+    // Metric
+    m: 1, // meter
+    km: 1000, // kilometer
+    dm: 0.1, // decimeter
+    cm: 0.01, // centimeter
+    mm: 0.001, // millimeter
+    μm: 0.000001, // micrometer
+    nm: 1e-9, // nanometer
+    pm: 1e-12, // picometer
+    fm: 1e-15, // femtometer
+    am: 1e-18, // attometer
+    zm: 1e-21, // zeptometer
+    ym: 1e-24, // yoctometer
+    Mm: 1e6, // megameter
+    Gm: 1e9, // gigameter
+    Tm: 1e12, // terameter
+    Pm: 1e15, // petameter
+    
+    // Imperial & US
+    ft: 0.3048, // foot
+    in: 0.0254, // inch
+    yd: 0.9144, // yard
+    mi: 1609.344, // mile
+    nmi: 1852, // nautical mile
+    thou: 0.0000254, // thou/mil
+    ftm: 1.8288, // fathom
+    cable: 185.2, // cable length (1/10 nmi)
+    link_us: 0.2011684, // link (US)
+    hh: 0.1016, // hand
+    mil: 0.0000254, // mil (same as thou)
+    
+    // Survey & Land
+    ch: 20.1168, // chain
+    rd: 5.0292, // rod/perch/pole
+    furlong: 201.168, // furlong
+    lea: 4828.032, // league
+    link: 0.201168, // link (Gunter's)
+    survey_ft: 0.3048006096, // US survey foot
+    survey_mi: 1609.3472, // US survey mile
+    acre_length: 63.61307, // acre length (chain * furlong)
+    township: 9656.0704, // township (6 miles)
+    section: 1609.3472, // section (1 mile)
+    
+    // Astronomical
+    AU: 149597870700, // astronomical unit
+    ly: 9460730472580800, // light year
+    pc: 30856775814671900, // parsec
+    kpc: 30856775814671900000, // kiloparsec
+    Mpc: 30856775814671900000000, // megaparsec
+    Gpc: 30856775814671900000000000, // gigaparsec
+    lm: 17987547480, // light minute
+    ls: 299792458, // light second
+    lh: 1079252848800, // light hour
+    ld: 25902068371200, // light day
+    lw: 181314478598400, // light week
+    lmo: 777062051136000, // light month (30 days)
+    lunar_dist: 384400000, // lunar distance
+    earth_radius: 6371000, // Earth radius
+    solar_radius: 695700000, // Solar radius
+    
+    // Ancient & Historical
+    cubit: 0.4572, // cubit (18 inches)
+    hand: 0.1016, // hand
+    span: 0.2286, // span
+    ell: 1.143, // ell
+    pace: 0.762, // pace
+    roman_ft: 0.296, // Roman foot
+    roman_mi: 1480, // Roman mile
+    stadium: 185, // stadium (Greek/Roman)
+    actus: 35.5, // actus (Roman)
+    parasang: 5800, // parasang (Persian)
+    digit: 0.01905, // digit
+    palm: 0.0762, // palm (4 digits)
+    greek_cubit: 0.462, // Greek cubit
+    fathom_ancient: 1.83, // Ancient fathom
+    reed: 3.11, // reed (Biblical)
+    
+    // Typography & Digital
+  pt: 0.000352778,                    // point (1/72 inch)
+  pica: 0.004233,                     // pica (12 points)
+  twip: 0.000017639,                  // twip (1/20 point)
+  pixel: 0.000264583,                 // pixel (at 96 DPI)
+  pixel_hdpi: 0.000084667,            // pixel (at 300 DPI)
+  didot: 0.000376065,                 // didot point (European)
+  cicero: 0.004512777,                // cicero (12 didot points)
+  point_hp: 0.000352778,              // PostScript point (same as regular point)
+  em: 0.004233,                       // em (16px equivalent)
+  rem: 0.004233,                      // rem (16px equivalent)
+  
+  // Maritime & Navigation
+  fath: 1.8288,                       // fathom
+  cable_length: 185.2,                // cable length (1/10 nmi)
+  shot: 27.432,                       // shot (15 fathoms)
+  league_naut: 5556,                  // nautical league (3 nmi)
+  mark_twain: 3.6576,                 // mark twain (2 fathoms)
+  boat_length: 10,                    // boat length (approx average)
+  
+  // Japanese
+  shaku: 0.303,                       // shaku
+  sun: 0.0303,                        // sun (1/10 shaku)
+  bu: 0.00303,                        // bu (1/10 sun)
+  rin: 0.000303,                      // rin (1/10 bu)
+  ken: 1.818,                         // ken (6 shaku)
+  cho: 109.09,                        // chō (60 ken)
+  ri: 3927.27,                        // ri (36 chō)
+  
+  // Chinese
+  cun: 0.0333,                        // cun
+  chi: 0.333,                         // chi (10 cun)
+  zhang: 3.33,                        // zhang (10 chi)
+  li_chinese: 500,                    // li (Chinese)
+  fen: 0.00333,                       // fen (1/10 cun)
+  
+  // Sports
+  football_field: 91.44,              // football field (100 yards)
+  cricket_pitch: 20.12,               // cricket pitch
+  tennis_court: 23.77,                // tennis court (length)
+  marathon: 42195,                    // marathon
+  olympic_pool: 50,                   // Olympic pool length
+};
+
+
+  // Names for units (long form)
+const unitNames = {
+    // Metric
+    m: "meters",
+    km: "kilometers",
+    dm: "decimeters",
+    cm: "centimeters",
+    mm: "millimeters",
+    μm: "micrometers",
+    nm: "nanometers",
+    pm: "picometers",
+    fm: "femtometers",
+    am: "attometers",
+    zm: "zeptometers",
+    ym: "yoctometers",
+    Mm: "megameters",
+    Gm: "gigameters",
+    Tm: "terameters",
+    Pm: "petameters",
+    
+    // Imperial & US
+    ft: "feet",
+    in: "inches",
+    yd: "yards",
+    mi: "miles",
+    nmi: "nautical miles",
+    thou: "thou/mil",
+    ftm: "fathoms",
+    cable: "cable lengths",
+    link_us: "links (US)",
+    hh: "hands",
+    mil: "mils",
+    
+    // Survey & Land
+    ch: "chains",
+    rd: "rods",
+    furlong: "furlongs",
+    lea: "leagues",
+    link: "links (Gunter's)",
+    survey_ft: "US survey feet",
+    survey_mi: "US survey miles",
+    acre_length: "acre lengths",
+    township: "townships",
+    section: "sections",
+    
+    // Astronomical
+    AU: "astronomical units",
+    ly: "light years",
+    pc: "parsecs",
+    kpc: "kiloparsecs",
+    Mpc: "megaparsecs",
+    Gpc: "gigaparsecs",
+    lm: "light minutes",
+    ls: "light seconds",
+    lh: "light hours",
+    ld: "light days",
+    lw: "light weeks",
+    lmo: "light months",
+    lunar_dist: "lunar distances",
+    earth_radius: "Earth radii",
+    solar_radius: "Solar radii",
+    
+    // Ancient & Historical
+    cubit: "cubits",
+    hand: "hands",
+    span: "spans",
+    ell: "ells",
+    pace: "paces",
+    roman_ft: "Roman feet",
+    roman_mi: "Roman miles",
+    stadium: "stadia",
+    actus: "actus",
+    parasang: "parasangs",
+    digit: "digits",
+    palm: "palms",
+    greek_cubit: "Greek cubits",
+    fathom_ancient: "ancient fathoms",
+    reed: "reeds",
+    
+    // Typography & Digital
+    pt: "points",
+    pica: "picas",
+    twip: "twips",
+    pixel: "pixels (96 DPI)",
+    pixel_hdpi: "pixels (300 DPI)",
+    didot: "didot points",
+    cicero: "ciceros",
+    point_hp: "PostScript points",
+    em: "ems",
+    rem: "rems",
+    
+    // Maritime & Navigation
+    fath: "fathoms",
+    cable_length: "cable lengths",
+    shot: "shots",
+    league_naut: "nautical leagues",
+    mark_twain: "mark twains",
+    boat_length: "boat lengths",
+    
+    // Japanese
+    shaku: "shaku",
+    sun: "sun",
+    bu: "bu",
+    rin: "rin",
+    ken: "ken",
+    cho: "chō",
+    ri: "ri",
+    
+    // Chinese
+    cun: "cun",
+    chi: "chi",
+    zhang: "zhang",
+    li_chinese: "li",
+    fen: "fen",
+  
+    // Sports
+    football_field: "football fields",
+    cricket_pitch: "cricket pitches",
+    tennis_court: "tennis courts",
+    marathon: "marathons",
+    olympic_pool: "Olympic pool lengths"
+  };
+
+  // Flattened array of all units
+  const allUnits = Object.values(unitCategories).flat();
+  
+  // Get unit by code
+  function getUnitByCode(code) {
+    return allUnits.find(unit => unit.code === code);
+  }
+
+  // Initialize custom dropdowns
+  initializeDropdowns();
+  
+  // Display existing history
+  displayHistory();
+
+  // Setup custom dropdowns
+  function initializeDropdowns() {
+    // Initialize unit dropdowns
+    const fromDropdown = document.getElementById('from-dropdown');
+    const toDropdown = document.getElementById('to-dropdown');
+    const decimalDropdown = document.getElementById('decimal-dropdown');
+    
+    // Populate unit dropdowns
+    populateUnitDropdown(fromDropdown, 'm');
+    populateUnitDropdown(toDropdown, 'ft');
+    
+    // Populate decimal places dropdown
+    const decimalOptionsContainer = document.createElement('div');
+    for (let i = 2; i <= 10; i++) {
+      const option = document.createElement('div');
+      option.className = 'custom-dropdown-option';
+      option.dataset.value = i;
+      option.textContent = i.toString();
+      
+      if (i === 2) {
+        option.classList.add('selected');
+      }
+      
+      option.addEventListener('click', function() {
+        decimalPlacesSelected.textContent = this.textContent;
+        decimalPlacesSelected.dataset.value = this.dataset.value;
+        closeAllDropdowns();
+      });
+      
+      decimalOptionsContainer.appendChild(option);
+    }
+    decimalDropdown.querySelector('.custom-dropdown-options').appendChild(decimalOptionsContainer);
+    
+    // Setup dropdown functionality
+    document.querySelectorAll('.custom-dropdown-selected').forEach(element => {
+      element.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const currentDropdown = this.parentElement.querySelector('.custom-dropdown-options');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+          if (dropdown !== currentDropdown) {
+            dropdown.style.display = 'none';
+          }
+        });
+        
+        // Toggle current dropdown
+        if (currentDropdown.style.display === 'block') {
+          currentDropdown.style.display = 'none';
+          this.classList.remove('active');
+        } else {
+          currentDropdown.style.display = 'block';
+          this.classList.add('active');
+          
+          // Focus search input if it exists
+          const searchInput = currentDropdown.querySelector('input');
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.value = ''; // Clear previous search
+          }
+        }
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+      closeAllDropdowns();
+    });
+    
+    // Search functionality
+    document.querySelectorAll('.custom-dropdown-search input').forEach(input => {
+      input.addEventListener('click', e => e.stopPropagation());
+      input.addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        const dropdown = this.closest('.custom-dropdown');
+        const options = dropdown.querySelectorAll('.custom-dropdown-option');
+        const categories = dropdown.querySelectorAll('.custom-dropdown-categories');
+        
+        // Hide all categories first
+        categories.forEach(category => {
+          category.style.display = 'none';
+        });
+        
+        let foundInCategory = {};
+        
+        // Show/hide options based on search
+        options.forEach(option => {
+          const optionText = option.textContent.toLowerCase();
+          if (optionText.includes(searchValue)) {
+            option.style.display = 'block';
+            
+            // Find and track the category this option belongs to
+            let currentElement = option.previousElementSibling;
+            while (currentElement) {
+              if (currentElement.classList.contains('custom-dropdown-categories')) {
+                foundInCategory[currentElement.textContent] = true;
+                break;
+              }
+              currentElement = currentElement.previousElementSibling;
+            }
+          } else {
+            option.style.display = 'none';
+          }
+        });
+        
+        // Show categories that have matching options
+        categories.forEach(category => {
+          if (foundInCategory[category.textContent]) {
+            category.style.display = 'block';
+          }
+        });
+      });
+    });
+  }
+  
+  function populateUnitDropdown(dropdown, selectedUnitCode) {
+    const optionsContainer = dropdown.querySelector('.custom-dropdown-options');
+    const selectedElement = dropdown.querySelector('.custom-dropdown-selected');
+    
+    // Clear existing options (except search box)
+    const searchBox = optionsContainer.querySelector('.custom-dropdown-search');
+    optionsContainer.innerHTML = '';
+    if (searchBox) {
+      optionsContainer.appendChild(searchBox);
+    }
+    
+    // Set initial selected value
+    const selectedUnit = getUnitByCode(selectedUnitCode);
+    if (selectedUnit) {
+      selectedElement.textContent = selectedUnit.name;
+      selectedElement.dataset.value = selectedUnit.code;
+    }
+    
+    // Add categories and units
+    Object.keys(unitCategories).forEach(category => {
+      const units = unitCategories[category];
+      
+      // Add category header
+      const categoryElement = document.createElement('div');
+      categoryElement.className = 'custom-dropdown-categories';
+      categoryElement.textContent = category;
+      optionsContainer.appendChild(categoryElement);
+      
+      // Add units in this category
+      units.forEach(unit => {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.dataset.value = unit.code;
+        option.textContent = unit.name;
+        
+        if (unit.code === selectedUnitCode) {
+          option.classList.add('selected');
+        }
+        
+        option.addEventListener('click', function() {
+          selectedElement.textContent = this.textContent;
+          selectedElement.dataset.value = this.dataset.value;
+          
+          // Update selected class
+          dropdown.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          this.classList.add('selected');
+          
+          closeAllDropdowns();
+        });
+        
+        optionsContainer.appendChild(option);
+      });
+    });
+  }
+  
+  // Modify the closeAllDropdowns function
+function closeAllDropdowns() {
+  document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+    dropdown.style.display = 'none';
+    
+  // Reset search and filters when closing
+    const searchInput = dropdown.querySelector('.custom-dropdown-search input');
+    if (searchInput) {
+      searchInput.value = '';
+      resetUnitVisibility(dropdown);
+    }
+  });
+  
+  document.querySelectorAll('.custom-dropdown-selected').forEach(selected => {
+    selected.classList.remove('active');
+  });
+}
+
+// Add a new function to reset unit visibility
+function resetUnitVisibility(dropdown) {
+  // Show all categories
+  dropdown.querySelectorAll('.custom-dropdown-categories').forEach(category => {
+    category.style.display = 'block';
+  });
+  
+  // Show all options
+  dropdown.querySelectorAll('.custom-dropdown-option').forEach(option => {
+    option.style.display = 'block';
+  });
+}
+  
+  // Add event listeners
+  convertBtn.addEventListener('click', performConversion);
+  clearHistoryBtn.addEventListener('click', clearHistory);
+  inputValue.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      performConversion();
+    }
+  });
+  
+  // Function to perform conversion with high precision
+  function performConversion() {
+    const input = parseFloat(inputValue.value);
+const errorElement = document.getElementById('input-error');
+
+if (isNaN(input)) {
+  inputValue.classList.add('error');
+  errorElement.style.display = 'block';
+  return;
+} else {
+  inputValue.classList.remove('error');
+  errorElement.style.display = 'none';
+}
+
+    const from = fromUnitSelected.dataset.value;
+    const to = toUnitSelected.dataset.value;
+    const places = parseInt(decimalPlacesSelected.dataset.value || 2);
+    
+    // For maximum precision, convert via base unit (meters)
+    // input → meters → output
+    const meters = input * toMeters[from];
+    const result = meters / toMeters[to];
+    
+    // Check for NaN or Infinity
+    if (isNaN(result) || !isFinite(result)) {
+      resultText.textContent = "Conversion error - Please check the conversion factors";
+      formulaText.textContent = "Make sure all units have proper conversion factors defined";
+      resultDiv.classList.add('show');
+      return;
+    }
+    
+    // Format with requested decimal places
+    const formattedResult = result.toFixed(places);
+    
+    // Generate formula text
+    const formulaHtml = generateFormulaText(from, to, input, formattedResult);
+    
+    resultText.textContent = `${input} ${unitNames[from] || from} = ${formattedResult} ${unitNames[to] || to}`;
+    formulaText.innerHTML = `Formula: ${formulaHtml}`;
+    resultDiv.classList.add('show');
+    
+    // Add to history
+    const historyItem = {
+      date: new Date().toLocaleString(),
+      from: input,
+      fromUnit: unitNames[from] || from,
+      fromCode: from,
+      to: formattedResult,
+      toUnit: unitNames[to] || to,
+      toCode: to
+    };
+    
+    // Add to beginning of array
+    conversionHistory.unshift(historyItem);
+    
+    // Keep only the latest 20 items
+    if (conversionHistory.length > 20) {
+      conversionHistory = conversionHistory.slice(0, 20);
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('lengthConverterHistory', JSON.stringify(conversionHistory));
+    
+    // Update history display
+    displayHistory();
+  }
+  
+  // Generate formula text
+  function generateFormulaText(fromUnit, toUnit, inputValue, result) {
+    if (fromUnit === toUnit) {
+      return `No conversion needed - units are the same`;
+    }
+    
+    // Direct conversion factor
+    const conversionFactor = toMeters[toUnit] === 0 ? 0 : toMeters[fromUnit] / toMeters[toUnit];
+    
+    if (isNaN(conversionFactor) || !isFinite(conversionFactor)) {
+      return `Conversion factor not available`;
+    }
+    
+    return `${unitNames[toUnit] || toUnit} = ${unitNames[fromUnit] || fromUnit} × ${conversionFactor.toExponential(6)}`;
+  }
+  
+  // Function to display history
+  function displayHistory() {
+    historyList.innerHTML = '';
+    
+    if (conversionHistory.length === 0) {
+      const emptyItem = document.createElement('div');
+      emptyItem.className = 'length-converter-history-item';
+      emptyItem.textContent = 'No conversion history yet';
+      historyList.appendChild(emptyItem);
+      return;
+    }
+    
+    conversionHistory.forEach((item) => {
+      const historyItem = document.createElement('div');
+      historyItem.className = 'length-converter-history-item';
+      historyItem.innerHTML = `
+        <span>${item.from} ${item.fromUnit} = ${item.to} ${item.toUnit}</span>
+        <small>${item.date}</small>
+      `;
+      
+      
+      // Add click event to use this conversion again
+      historyItem.addEventListener('click', () => {
+        // Set values in dropdowns
+        const fromUnit = getUnitByCode(item.fromCode);
+        const toUnit = getUnitByCode(item.toCode);
+        
+        if (fromUnit) {
+          fromUnitSelected.textContent = fromUnit.name;
+          fromUnitSelected.dataset.value = item.fromCode;
+        }
+        
+        if (toUnit) {
+          toUnitSelected.textContent = toUnit.name;
+          toUnitSelected.dataset.value = item.toCode;
+        }
+        
+        inputValue.value = item.from;
+        performConversion();
+      });
+      
+      historyList.appendChild(historyItem);
+    });
+  }
+  
+  // Function to clear history
+  function clearHistory() {
+    if (confirm('Are you sure you want to clear all conversion history?')) {
+      conversionHistory = [];
+      localStorage.removeItem('lengthConverterHistory');
+      displayHistory();
+    }
+  }
+  
+  // Helper function to safely compare floating point numbers
+  function areEqual(a, b, tolerance = 1e-10) {
+    return Math.abs(a - b) < tolerance;
+  }
+});
+    </script> 
+    </body> 
+  </html>
