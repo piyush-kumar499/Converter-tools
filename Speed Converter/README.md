@@ -1,7 +1,7 @@
 # Speed Converter
 
-![Speed Converter Screenshot](screenshots/speed-converter-main.png)
-![Conversion History](screenshots/speed-converter-history.png)
+![Speed Converter Screenshot](https://github.com/piyush-kumar499/Converter-tools/blob/a5dd9ebfcf6e171a79bc44f7a7d024fcd1758b41/Speed%20Converter/IMG_20250730_152856.jpg)
+![Conversion History](https://github.com/piyush-kumar499/Converter-tools/blob/a5dd9ebfcf6e171a79bc44f7a7d024fcd1758b41/Speed%20Converter/Screenshot_2025-07-30-15-28-20-47_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 A feature-rich web-based speed converter that supports 50+ speed units across 9 different categories, from everyday units like km/h and mph to specialized units like Mach numbers and animal speeds.
 
