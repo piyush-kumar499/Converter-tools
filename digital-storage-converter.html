@@ -1,0 +1,1469 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Advanced Digital Storage Converter</title>
+  <style>
+    .storage-converter-root {
+  --primary-color: #4361ee;
+  --primary-hover: #3a56d4;
+  --secondary-color: #3f37c9;
+  --background-color: #f8fafc;
+  --card-color: #ffffff;
+  --text-color: #1e293b;
+  --text-light: #64748b;
+  --border-color: #e2e8f0;
+  --success-color: #10b981;
+  --error-color: #ef4444;
+  --border-radius: 10px;
+  --input-radius: 8px;
+  --box-shadow: 0 10px 15px -3px rgba(0, 0, 0, 0.05), 0 4px 6px -2px rgba(0, 0, 0, 0.02);
+  --card-shadow: 0 20px 25px -5px rgba(0, 0, 0, 0.05), 0 10px 10px -5px rgba(0, 0, 0, 0.01);
+  --transition: all 0.3s ease;
+}
+
+.storage-converter-root * {
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: 'Inter', 'Segoe UI', system-ui, -apple-system, BlinkMacSystemFont, sans-serif;
+}
+
+.storage-converter-wrapper {
+  background-color: var(--background-color);
+  color: var(--text-color);
+  line-height: 1.6;
+  padding: 0;
+  max-width: 900px;
+  margin: 0 auto;
+  display: flex;
+  flex-direction: column;
+}
+
+.storage-converter-title {
+  text-align: center;
+  margin-bottom: 2rem;
+  color: var(--text-color);
+  font-weight: 700;
+  font-size: 2.2rem;
+  position: relative;
+  padding-bottom: 1rem;
+}
+
+.storage-converter-title::after {
+  content: '';
+  position: absolute;
+  bottom: 0;
+  left: 50%;
+  transform: translateX(-50%);
+  width: 80px;
+  height: 4px;
+  background: linear-gradient(to right, var(--primary-color), var(--secondary-color));
+  border-radius: 2px;
+}
+
+.storage-converter-card {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 2rem;
+  margin-bottom: 2rem;
+  border: 1px solid var(--border-color);
+}
+
+.storage-converter-form-group {
+  margin-bottom: 1.5rem;
+  position: relative;
+}
+
+.storage-converter-label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.95rem;
+}
+
+.storage-converter-input {
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 1rem;
+  transition: var(--transition);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  color: var(--text-color);
+}
+
+.storage-converter-input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.storage-converter-input-group {
+  display: flex;
+  gap: 1.5rem;
+  margin-bottom: 1.5rem;
+}
+
+.storage-converter-input-group > div {
+  flex: 1;
+}
+
+.storage-converter-options {
+  margin-bottom: 1.5rem;
+}
+
+.storage-converter-radio-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.storage-converter-radio-options {
+  display: flex;
+  gap: 1.5rem;
+  margin-top: 0.5rem;
+}
+
+.storage-converter-radio {
+  display: flex;
+  align-items: center;
+}
+
+.storage-converter-radio input[type="radio"] {
+  margin-right: 0.5rem;
+  cursor: pointer;
+}
+
+.storage-converter-radio label {
+  cursor: pointer;
+  font-size: 0.95rem;
+}
+
+.storage-converter-btn {
+  background: linear-gradient(135deg, var(--primary-color), var(--secondary-color));
+  color: white;
+  border: none;
+  border-radius: var(--input-radius);
+  padding: 1rem 1.5rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: var(--transition);
+  width: 100%;
+  box-shadow: 0 4px 6px rgba(63, 55, 201, 0.15);
+  letter-spacing: 0.5px;
+  position: relative;
+  overflow: hidden;
+}
+
+.storage-converter-btn::before {
+  content: '';
+  position: absolute;
+  top: 0;
+  left: -100%;
+  width: 100%;
+  height: 100%;
+  background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.2), transparent);
+  transition: all 0.6s ease;
+}
+
+.storage-converter-btn:hover {
+  background: linear-gradient(135deg, var(--primary-hover), var(--secondary-color));
+  transform: translateY(-2px);
+  box-shadow: 0 6px 12px rgba(63, 55, 201, 0.2);
+}
+
+.storage-converter-btn:hover::before {
+  left: 100%;
+}
+
+.storage-converter-btn:active {
+  transform: translateY(0);
+}
+
+.storage-converter-result {
+  margin-top: 1.5rem;
+  padding: 1.25rem;
+  background-color: rgba(67, 97, 238, 0.05);
+  border-radius: var(--input-radius);
+  border-left: 4px solid var(--primary-color);
+  display: none;
+  animation: fadeIn 0.3s ease-in-out;
+}
+
+@keyframes fadeIn {
+  from { opacity: 0; transform: translateY(10px); }
+  to { opacity: 1; transform: translateY(0); }
+}
+
+.storage-converter-result.show {
+  display: block;
+}
+
+.storage-converter-result p {
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: var(--text-color);
+}
+
+.storage-converter-formula {
+  font-size: 0.9rem;
+  color: var(--text-light);
+  margin-top: 0.75rem;
+  padding-top: 0.75rem;
+  border-top: 1px dashed var(--border-color);
+}
+
+.storage-converter-context {
+  margin-top: 0.75rem;
+  font-size: 0.9rem;
+  color: var(--text-light);
+  padding: 0.6rem;
+  background-color: rgba(255, 247, 237, 0.7);
+  border-left: 3px solid #f97316;
+  border-radius: 4px;
+}
+
+.storage-converter-practical {
+  padding: 1rem 0;
+}
+
+.storage-converter-practical-title {
+  margin-bottom: 1rem;
+  font-weight: 600;
+  color: var(--text-color);
+  position: relative;
+  padding-bottom: 0.75rem;
+  border-bottom: 2px solid var(--border-color);
+}
+
+.storage-converter-practical-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.storage-converter-practical-list {
+  display: flex;
+  flex-direction: column;
+  gap: 1rem;
+}
+
+.practical-item {
+  display: flex;
+  align-items: center;
+  padding: 0.75rem;
+  background-color: rgba(67, 97, 238, 0.03);
+  border-radius: var(--input-radius);
+  transition: var(--transition);
+}
+
+.practical-item:hover {
+  background-color: rgba(67, 97, 238, 0.08);
+  transform: translateX(5px);
+}
+
+.practical-value {
+  font-weight: 600;
+  color: var(--primary-color);
+  margin-right: 0.5rem;
+}
+
+.practical-equals {
+  margin: 0 0.75rem;
+  color: var(--text-light);
+  font-size: 1.1rem;
+}
+
+.practical-description {
+  flex: 1;
+}
+
+.storage-converter-history {
+  background-color: var(--card-color);
+  border-radius: var(--border-radius);
+  box-shadow: var(--card-shadow);
+  padding: 1.5rem;
+  border: 1px solid var(--border-color);
+}
+
+.storage-converter-history-title {
+  margin-bottom: 1rem;
+  color: var(--text-color);
+  font-weight: 600;
+  border-bottom: 2px solid var(--border-color);
+  padding-bottom: 0.75rem;
+  position: relative;
+}
+
+.storage-converter-history-title::after {
+  content: '';
+  position: absolute;
+  bottom: -2px;
+  left: 0;
+  width: 60px;
+  height: 2px;
+  background-color: var(--primary-color);
+}
+
+.storage-converter-history-list {
+  max-height: 300px;
+  overflow-y: auto;
+  padding-right: 0.5rem;
+  margin-bottom: 1rem;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.storage-converter-history-list::-webkit-scrollbar {
+  width: 6px;
+}
+
+.storage-converter-history-list::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.storage-converter-history-list::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.history-item {
+  padding: 1rem;
+  border-bottom: 1px solid var(--border-color);
+  cursor: pointer;
+  transition: var(--transition);
+  border-radius: 6px;
+}
+
+.history-item:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+  transform: translateX(5px);
+}
+
+.history-item:last-child {
+  border-bottom: none;
+}
+
+.history-time {
+  color: var(--text-light);
+  font-size: 0.8rem;
+  margin-bottom: 0.3rem;
+}
+
+.history-conversion {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 0.5rem;
+  margin-bottom: 0.3rem;
+}
+
+.history-value {
+  font-weight: 500;
+}
+
+.history-equals {
+  margin: 0 0.5rem;
+  color: var(--text-light);
+}
+
+.history-result {
+  font-weight: 600;
+  color: var(--primary-color);
+}
+
+.history-notation {
+  font-size: 0.8rem;
+  color: var(--text-light);
+}
+
+.empty-history {
+  color: var(--text-light);
+  text-align: center;
+  padding: 1.5rem 0;
+}
+
+.storage-converter-clear-history {
+  margin-top: 1rem;
+  color: #e74c3c;
+  background: none;
+  border: 1px solid #e74c3c;
+  padding: 0.65rem 1.25rem;
+  cursor: pointer;
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+  transition: var(--transition);
+  display: block;
+  width: 100%;
+  font-weight: 500;
+}
+
+.storage-converter-clear-history:hover {
+  background-color: #e74c3c;
+  color: white;
+}
+
+/* Custom dropdown styling */
+.custom-dropdown {
+  position: relative;
+  width: 100%;
+}
+
+.custom-dropdown-selected {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+  padding: 0.9rem 1rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  background-color: white;
+  cursor: pointer;
+  font-size: 1rem;
+  transition: var(--transition);
+  color: var(--text-color);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.custom-dropdown-selected:hover {
+  border-color: #cbd5e1;
+}
+
+.custom-dropdown-selected:focus,
+.custom-dropdown-selected.active {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.custom-dropdown-selected::after {
+  content: '⌄';
+  font-size: 1.2rem;
+  color: var(--text-light);
+  font-weight: bold;
+  transition: transform 0.2s ease;
+}
+
+.custom-dropdown-selected.active::after {
+  transform: rotate(180deg);
+}
+
+.custom-dropdown-options {
+  position: absolute;
+  top: 100%;
+  left: 0;
+  right: 0;
+  background-color: white;
+  border: 1px solid var(--border-color);
+  border-radius: 0 0 var(--input-radius) var(--input-radius);
+  z-index: 100;
+  max-height: 300px;
+  overflow-y: auto;
+  display: none;
+  box-shadow: var(--box-shadow);
+  margin-top: 5px;
+  scrollbar-width: thin;
+  scrollbar-color: var(--primary-color) var(--border-color);
+}
+
+.custom-dropdown-options::-webkit-scrollbar {
+  width: 6px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-track {
+  background: var(--border-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-options::-webkit-scrollbar-thumb {
+  background-color: var(--primary-color);
+  border-radius: 10px;
+}
+
+.custom-dropdown-option {
+  padding: 0.75rem 1rem;
+  cursor: pointer;
+  transition: background-color 0.2s;
+}
+
+.custom-dropdown-option:hover {
+  background-color: rgba(67, 97, 238, 0.05);
+}
+
+.custom-dropdown-option.selected {
+  background-color: rgba(67, 97, 238, 0.1);
+  color: var(--primary-color);
+  font-weight: 600;
+}
+
+.custom-dropdown-categories {
+  border-bottom: 1px solid var(--border-color);
+  padding: 0.75rem 1rem;
+  background-color: #f1f5f9;
+  font-weight: 600;
+  color: var(--text-color);
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 0.05em;
+}
+
+.custom-dropdown-search {
+  padding: 0.75rem;
+  position: sticky;
+  top: 0;
+  background-color: white;
+  border-bottom: 1px solid var(--border-color);
+  z-index: 10;
+}
+
+.custom-dropdown-search input {
+  width: 100%;
+  padding: 0.65rem 0.85rem;
+  border: 1px solid var(--border-color);
+  border-radius: var(--input-radius);
+  font-size: 0.9rem;
+}
+
+.custom-dropdown-search input:focus {
+  outline: none;
+  border-color: var(--primary-color);
+  box-shadow: 0 0 0 3px rgba(67, 97, 238, 0.15);
+}
+
+.error-message {
+  color: var(--error-color);
+  font-size: 0.85rem;
+  margin-top: 0.5rem;
+  display: none;
+  font-weight: 500;
+  animation: shake 0.4s linear;
+}
+
+@keyframes shake {
+  0%, 100% {transform: translateX(0);}
+  20%, 60% {transform: translateX(-5px);}
+  40%, 80% {transform: translateX(5px);}
+}
+
+.storage-converter-input.error {
+  border-color: var(--error-color);
+  box-shadow: 0 0 0 3px rgba(239, 68, 68, 0.1);
+}
+
+/* Responsive styles */
+@media (max-width: 768px) {
+  .storage-converter-wrapper {
+    padding: 1.5rem;
+  }
+
+  .storage-converter-title {
+    font-size: 1.75rem;
+  }
+
+  .storage-converter-input-group {
+    flex-direction: column;
+    gap: 1rem;
+  }
+  
+  .storage-converter-card, 
+  .storage-converter-history {
+    padding: 1.5rem;
+  }
+
+  .storage-converter-radio-options {
+    flex-direction: column;
+    gap: 0.75rem;
+  }
+  
+  .history-conversion {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .history-equals {
+    margin: 0.25rem 0;
+  }
+}
+
+@media (max-width: 480px) {
+  .storage-converter-wrapper {
+    padding: 1rem;
+  }
+  
+  .storage-converter-title {
+    font-size: 1.5rem;
+    margin-bottom: 1.5rem;
+  }
+
+  .storage-converter-card, 
+  .storage-converter-history {
+    padding: 1.25rem;
+  }
+
+  .storage-converter-label {
+    font-size: 0.9rem;
+  }
+
+  .storage-converter-input, 
+  .custom-dropdown-selected {
+    padding: 0.75rem;
+    font-size: 0.95rem;
+  }
+  
+  .storage-converter-btn {
+    padding: 0.85rem 1.25rem;
+  }
+  
+  .practical-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+  
+  .practical-equals {
+    margin: 0.25rem 0;
+  }
+}
+  </style>
+</head>
+<body>
+  <div class="storage-converter-root">
+    <div class="storage-converter-wrapper">
+      <h1 class="storage-converter-title">Digital Storage Converter</h1>
+      <div class="storage-converter-card">
+        <div class="storage-converter-input-group">
+          <div class="storage-converter-form-group">
+            <label class="storage-converter-label" for="from-unit">From</label>
+            <div class="custom-dropdown" id="from-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="from-unit-selected">Gigabyte (GB)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+          
+          <div class="storage-converter-form-group">
+            <label class="storage-converter-label" for="to-unit">To</label>
+            <div class="custom-dropdown" id="to-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="to-unit-selected">Terabyte (TB)</div>
+              <div class="custom-dropdown-options">
+                <div class="custom-dropdown-search">
+                  <input type="text" placeholder="Search units...">
+                </div>
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="storage-converter-input-group">
+          <div class="storage-converter-form-group">
+            <label class="storage-converter-label" for="input-value">Enter Value</label>
+            <input type="number" class="storage-converter-input" id="input-value" step="any" placeholder="Enter a number">
+            <div id="input-error" class="error-message">Please enter a valid number</div>
+          </div>
+          
+          <div class="storage-converter-form-group">
+            <label class="storage-converter-label" for="decimal-places">Decimal Places</label>
+            <div class="custom-dropdown" id="decimal-dropdown">
+              <div class="custom-dropdown-selected" tabindex="0" id="decimal-places-selected">2</div>
+              <div class="custom-dropdown-options">
+                <!-- Options will be populated by JavaScript -->
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <div class="storage-converter-options">
+          <div class="storage-converter-radio-group">
+            <label class="storage-converter-label">Notation System</label>
+            <div class="storage-converter-radio-options">
+              <div class="storage-converter-radio">
+                <input type="radio" id="decimal" name="notation" value="decimal" checked>
+                <label for="decimal">Decimal (1000 bytes = 1 KB)</label>
+              </div>
+              <div class="storage-converter-radio">
+                <input type="radio" id="binary" name="notation" value="binary">
+                <label for="binary">Binary (1024 bytes = 1 KiB)</label>
+              </div>
+            </div>
+          </div>
+        </div>
+        
+        <button id="convert-btn" class="storage-converter-btn">Convert</button>
+        
+        <div id="result" class="storage-converter-result">
+          <p id="result-text"></p>
+          <div id="formula" class="storage-converter-formula"></div>
+          <div id="context" class="storage-converter-context"></div>
+        </div>
+      </div>
+      
+      <div class="storage-converter-card">
+        <div class="storage-converter-practical">
+          <h3 class="storage-converter-practical-title">Practical Equivalents</h3>
+          <div id="practical-equivalents" class="storage-converter-practical-list"></div>
+        </div>
+      </div>
+      
+      <div class="storage-converter-history">
+        <h3 class="storage-converter-history-title">Conversion History</h3>
+        <div id="history-list" class="storage-converter-history-list"></div>
+        <button id="clear-history" class="storage-converter-clear-history">Clear History</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+  document.addEventListener('DOMContentLoaded', function() {
+  // Get DOM elements
+  const fromUnitSelected = document.getElementById('from-unit-selected');
+  const toUnitSelected = document.getElementById('to-unit-selected');
+  const decimalPlacesSelected = document.getElementById('decimal-places-selected');
+  const inputValue = document.getElementById('input-value');
+  const convertBtn = document.getElementById('convert-btn');
+  const resultDiv = document.getElementById('result');
+  const resultText = document.getElementById('result-text');
+  const formulaText = document.getElementById('formula');
+  const contextText = document.getElementById('context');
+  const practicalEquivalents = document.getElementById('practical-equivalents');
+  const historyList = document.getElementById('history-list');
+  const clearHistoryBtn = document.getElementById('clear-history');
+  const notationRadios = document.querySelectorAll('input[name="notation"]');
+  
+  // Load conversion history from localStorage
+  let conversionHistory = JSON.parse(localStorage.getItem('storageConverterHistory')) || [];
+  
+  // Add error event listener
+  inputValue.addEventListener('input', function() {
+    const errorElement = document.getElementById('input-error');
+    inputValue.classList.remove('error');
+    errorElement.style.display = 'none';
+  });
+
+  // Organize units by categories
+  const unitCategories = {
+    'Decimal (SI) Units': [
+      { code: 'b', name: 'Bit (b)' },
+      { code: 'B', name: 'Byte (B)' },
+      { code: 'KB', name: 'Kilobyte (KB)' },
+      { code: 'MB', name: 'Megabyte (MB)' },
+      { code: 'GB', name: 'Gigabyte (GB)' },
+      { code: 'TB', name: 'Terabyte (TB)' },
+      { code: 'PB', name: 'Petabyte (PB)' },
+      { code: 'EB', name: 'Exabyte (EB)' },
+      { code: 'ZB', name: 'Zettabyte (ZB)' },
+      { code: 'YB', name: 'Yottabyte (YB)' }
+    ],
+    'Binary Units': [
+      { code: 'KiB', name: 'Kibibyte (KiB)' },
+      { code: 'MiB', name: 'Mebibyte (MiB)' },
+      { code: 'GiB', name: 'Gibibyte (GiB)' },
+      { code: 'TiB', name: 'Tebibyte (TiB)' },
+      { code: 'PiB', name: 'Pebibyte (PiB)' },
+      { code: 'EiB', name: 'Exbibyte (EiB)' },
+      { code: 'ZiB', name: 'Zebibyte (ZiB)' },
+      { code: 'YiB', name: 'Yobibyte (YiB)' }
+    ],
+    'Network Data Rates': [
+      { code: 'bps', name: 'Bits per second (bps)' },
+      { code: 'Kbps', name: 'Kilobits per second (Kbps)' },
+      { code: 'Mbps', name: 'Megabits per second (Mbps)' },
+      { code: 'Gbps', name: 'Gigabits per second (Gbps)' },
+      { code: 'Tbps', name: 'Terabits per second (Tbps)' }
+    ],
+    'Traditional Computer Memory': [
+      { code: 'word', name: 'Word (16-bit)' },
+      { code: 'block', name: 'Block (512 bytes)' },
+      { code: 'sector', name: 'Sector (512 bytes)' },
+      { code: 'cluster', name: 'Cluster (4 KiB typical)' },
+      { code: 'page', name: 'Memory Page (4 KiB typical)' }
+    ],
+    'Storage Media': [
+      { code: 'floppy', name: 'Floppy Disk (1.44 MB)' },
+      { code: 'cd', name: 'CD (700 MB)' },
+      { code: 'dvd', name: 'DVD (4.7 GB)' },
+      { code: 'dvd_dl', name: 'DVD Dual Layer (8.5 GB)' },
+      { code: 'bd', name: 'Blu-ray Disc (25 GB)' },
+      { code: 'bd_dl', name: 'Blu-ray Disc Dual Layer (50 GB)' },
+      { code: 'bd_xl', name: 'Blu-ray XL (100 GB)' }
+    ],
+    'File Sizes': [
+      { code: 'mp3', name: 'Average MP3 (3.5 MB)' },
+      { code: 'photo', name: 'Digital Photo (5 MB)' },
+      { code: 'doc', name: 'Document (250 KB)' },
+      { code: 'email', name: 'Email (75 KB)' },
+      { code: 'raw_photo', name: 'RAW Photo (25 MB)' },
+      { code: 'hd_movie', name: 'HD Movie (4 GB)' },
+      { code: '4k_movie', name: '4K Movie (100 GB)' }
+    ],
+    'Historical Units': [
+      { code: 'punch_card', name: 'IBM Punch Card (80 bytes)' },
+      { code: 'magnetic_tape', name: 'IBM Magnetic Tape (Reel, 170 MB)' }
+    ]
+  };
+
+  // Conversion factors to bytes (base unit for digital storage)
+  const toBytes = {
+    // Base units
+    'b': 0.125, // bit = 1/8 byte
+    'B': 1, // byte (base unit)
+    
+    // Decimal (SI) Units
+    'KB': 1000, // Kilobyte
+    'MB': 1000000, // Megabyte
+    'GB': 1000000000, // Gigabyte
+    'TB': 1000000000000, // Terabyte
+    'PB': 1000000000000000, // Petabyte
+    'EB': 1000000000000000000, // Exabyte
+    'ZB': 1000000000000000000000, // Zettabyte
+    'YB': 1000000000000000000000000, // Yottabyte
+    
+    // Binary Units
+    'KiB': 1024, // Kibibyte
+    'MiB': 1048576, // Mebibyte = 1024^2
+    'GiB': 1073741824, // Gibibyte = 1024^3
+    'TiB': 1099511627776, // Tebibyte = 1024^4
+    'PiB': 1125899906842624, // Pebibyte = 1024^5
+    'EiB': 1152921504606846976, // Exbibyte = 1024^6
+    'ZiB': 1180591620717411303424, // Zebibyte = 1024^7
+    'YiB': 1208925819614629174706176, // Yobibyte = 1024^8
+    
+    // Network Data Rates (per second)
+    'bps': 0.125, // bits per second (same as bits)
+    'Kbps': 125, // Kilobits per second = 1000 bits = 125 bytes
+    'Mbps': 125000, // Megabits per second = 1000000 bits = 125000 bytes
+    'Gbps': 125000000, // Gigabits per second = 1000000000 bits = 125000000 bytes
+    'Tbps': 125000000000, // Terabits per second = 1000000000000 bits = 125000000000 bytes
+    
+    // Traditional Computer Memory
+    'word': 2, // 16-bit word = 2 bytes
+    'block': 512, // Traditional disk block = 512 bytes
+    'sector': 512, // Traditional disk sector = 512 bytes
+    'cluster': 4096, // Typical disk cluster = 4 KiB = 4096 bytes
+    'page': 4096, // Typical memory page = 4 KiB = 4096 bytes
+    
+    // Storage Media
+    'floppy': 1474560, // 3.5" Floppy disk = 1.44 MB = 1474560 bytes
+    'cd': 737280000, // CD-ROM = 700 MB = 737280000 bytes
+    'dvd': 4700000000, // DVD = 4.7 GB = 4700000000 bytes
+    'dvd_dl': 8500000000, // Dual-layer DVD = 8.5 GB = 8500000000 bytes
+    'bd': 25000000000, // Blu-ray disc = 25 GB = 25000000000 bytes
+    'bd_dl': 50000000000, // Dual-layer Blu-ray = 50 GB = 50000000000 bytes
+    'bd_xl': 100000000000, // Blu-ray XL = 100 GB = 100000000000 bytes
+    
+    // File Sizes
+    'mp3': 3670016, // Average MP3 = 3.5 MB = 3670016 bytes
+    'photo': 5242880, // Average digital photo = 5 MB = 5242880 bytes
+    'doc': 256000, // Average document = 250 KB = 256000 bytes
+    'email': 76800, // Average email = 75 KB = 76800 bytes
+    'raw_photo': 26214400, // Average RAW photo = 25 MB = 26214400 bytes
+    'hd_movie': 4294967296, // HD movie = 4 GB = 4294967296 bytes
+    '4k_movie': 107374182400, // 4K movie = 100 GB = 107374182400 bytes
+    
+    // Historical Units
+    'punch_card': 80, // IBM Punch Card = 80 bytes
+    'magnetic_tape': 178257920 // IBM Magnetic Tape Reel = 170 MB = 178257920 bytes
+  };
+
+  // Names for units (long form)
+  const unitNames = {
+    // Base units
+    'b': "bit",
+    'B': "byte",
+    
+    // Decimal (SI) Units
+    'KB': "kilobyte",
+    'MB': "megabyte",
+    'GB': "gigabyte",
+    'TB': "terabyte",
+    'PB': "petabyte",
+    'EB': "exabyte",
+    'ZB': "zettabyte",
+    'YB': "yottabyte",
+    
+    // Binary Units
+    'KiB': "kibibyte",
+    'MiB': "mebibyte",
+    'GiB': "gibibyte",
+    'TiB': "tebibyte",
+    'PiB': "pebibyte",
+    'EiB': "exbibyte",
+    'ZiB': "zebibyte",
+    'YiB': "yobibyte",
+    
+    // Network Data Rates
+    'bps': "bit per second",
+    'Kbps': "kilobit per second",
+    'Mbps': "megabit per second",
+    'Gbps': "gigabit per second",
+    'Tbps': "terabit per second",
+    
+    // Traditional Computer Memory
+    'word': "word (16-bit)",
+    'block': "block",
+    'sector': "sector",
+    'cluster': "cluster",
+    'page': "memory page",
+    
+    // Storage Media
+    'floppy': "floppy disk",
+    'cd': "CD",
+    'dvd': "DVD",
+    'dvd_dl': "dual-layer DVD",
+    'bd': "Blu-ray disc",
+    'bd_dl': "dual-layer Blu-ray",
+    'bd_xl': "Blu-ray XL",
+    
+    // File Sizes
+    'mp3': "MP3 file",
+    'photo': "digital photo",
+    'doc': "document",
+    'email': "email",
+    'raw_photo': "RAW photo",
+    'hd_movie': "HD movie",
+    '4k_movie': "4K movie",
+    
+    // Historical Units
+    'punch_card': "punch card",
+    'magnetic_tape': "magnetic tape reel"
+  };
+
+  // Context notes for special units
+  const unitNotes = {
+    'KB': "Note: KB refers to decimal kilobyte (1000 bytes), not to be confused with KiB (1024 bytes).",
+    'KiB': "Note: KiB refers to binary kibibyte (1024 bytes), as defined by IEC standards.",
+    'word': "Note: Word length varies by architecture. This converter uses the common 16-bit (2-byte) definition.",
+    'cluster': "Note: Cluster size varies by filesystem. This converter uses the common 4 KiB definition.",
+    'page': "Note: Memory page size varies by system. This converter uses the common 4 KiB definition.",
+    'mp3': "Note: MP3 file sizes vary by length and quality. This uses a 3-minute song at 192 kbps as reference.",
+    'bps': "Note: Network data rates measure transfer speeds, not storage directly."
+  };
+
+  // Practical equivalents reference data - what can fit in X storage
+  const practicalReferences = {
+    'B': [
+      { description: "1 ASCII character" },
+      { description: "1 keyboard keystroke" }
+    ],
+    'KB': [
+      { description: "A small text file or email" },
+      { description: "1/3 of a page of plain text" }
+    ],
+    'MB': [
+      { description: "A 3-minute MP3" },
+      { description: "A high-resolution JPEG image" },
+      { description: "About 500 pages of text" }
+    ],
+    'GB': [
+      { description: "300 high-quality photos" },
+      { description: "4 hours of HD video" },
+      { description: "750 MP3 songs" }
+    ],
+    'TB': [
+      { description: "1,000 hours of HD video" },
+      { description: "250,000 high-quality photos" },
+      { description: "500 4K movies" }
+    ],
+    'PB': [
+      { description: "4,000 digital libraries" },
+      { description: "500 million photos" },
+      { description: "The entire US Library of Congress (if digitized)" }
+    ]
+  };
+
+  // Flattened array of all units
+  const allUnits = Object.values(unitCategories).flat();
+  
+  // Get unit by code
+  function getUnitByCode(code) {
+    return allUnits.find(unit => unit.code === code);
+  }
+
+  // Initialize custom dropdowns
+  initializeDropdowns();
+  
+  // Display existing history
+  displayHistory();
+
+  // Setup custom dropdowns
+  function initializeDropdowns() {
+    // Initialize unit dropdowns
+    const fromDropdown = document.getElementById('from-dropdown');
+    const toDropdown = document.getElementById('to-dropdown');
+    const decimalDropdown = document.getElementById('decimal-dropdown');
+    
+    // Populate unit dropdowns
+    populateUnitDropdown(fromDropdown, 'GB');
+    populateUnitDropdown(toDropdown, 'TB');
+    
+    // Populate decimal places dropdown
+    const decimalOptionsContainer = document.createElement('div');
+    for (let i = 2; i <= 10; i++) {
+      const option = document.createElement('div');
+      option.className = 'custom-dropdown-option';
+      option.dataset.value = i;
+      option.textContent = i.toString();
+      
+      if (i === 2) {
+        option.classList.add('selected');
+      }
+      
+      option.addEventListener('click', function() {
+        decimalPlacesSelected.textContent = this.textContent;
+        decimalPlacesSelected.dataset.value = this.dataset.value;
+        closeAllDropdowns();
+      });
+      
+      decimalOptionsContainer.appendChild(option);
+    }
+    decimalDropdown.querySelector('.custom-dropdown-options').appendChild(decimalOptionsContainer);
+    
+    // Setup dropdown functionality
+    document.querySelectorAll('.custom-dropdown-selected').forEach(element => {
+      element.addEventListener('click', function(e) {
+        e.stopPropagation();
+        const currentDropdown = this.parentElement.querySelector('.custom-dropdown-options');
+        
+        // Close all other dropdowns
+        document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+          if (dropdown !== currentDropdown) {
+            dropdown.style.display = 'none';
+          }
+        });
+        
+        // Toggle current dropdown
+        if (currentDropdown.style.display === 'block') {
+          currentDropdown.style.display = 'none';
+          this.classList.remove('active');
+        } else {
+          currentDropdown.style.display = 'block';
+          this.classList.add('active');
+          
+          // Focus search input if it exists
+          const searchInput = currentDropdown.querySelector('input');
+          if (searchInput) {
+            searchInput.focus();
+            searchInput.value = ''; // Clear previous search
+          }
+        }
+      });
+    });
+    
+    // Close dropdowns when clicking outside
+    document.addEventListener('click', function() {
+      closeAllDropdowns();
+    });
+    
+    // Search functionality
+    document.querySelectorAll('.custom-dropdown-search input').forEach(input => {
+      input.addEventListener('click', e => e.stopPropagation());
+      input.addEventListener('input', function() {
+        const searchValue = this.value.toLowerCase();
+        const dropdown = this.closest('.custom-dropdown');
+        const options = dropdown.querySelectorAll('.custom-dropdown-option');
+        const categories = dropdown.querySelectorAll('.custom-dropdown-categories');
+        
+        // Hide all categories first
+        categories.forEach(category => {
+          category.style.display = 'none';
+        });
+        
+        let foundInCategory = {};
+        
+        // Show/hide options based on search
+        options.forEach(option => {
+          const optionText = option.textContent.toLowerCase();
+          if (optionText.includes(searchValue)) {
+            option.style.display = 'block';
+            
+            // Find and track the category this option belongs to
+            let currentElement = option.previousElementSibling;
+            while (currentElement) {
+              if (currentElement.classList.contains('custom-dropdown-categories')) {
+                foundInCategory[currentElement.textContent] = true;
+                break;
+              }
+              currentElement = currentElement.previousElementSibling;
+            }
+          } else {
+            option.style.display = 'none';
+          }
+        });
+        
+        // Show categories that have matching options
+        categories.forEach(category => {
+          if (foundInCategory[category.textContent]) {
+            category.style.display = 'block';
+          }
+        });
+      });
+    });
+  }
+  
+  function populateUnitDropdown(dropdown, selectedUnitCode) {
+    const optionsContainer = dropdown.querySelector('.custom-dropdown-options');
+    const selectedElement = dropdown.querySelector('.custom-dropdown-selected');
+    
+    // Clear existing options (except search box)
+    const searchBox = optionsContainer.querySelector('.custom-dropdown-search');
+    optionsContainer.innerHTML = '';
+    if (searchBox) {
+      optionsContainer.appendChild(searchBox);
+    }
+    
+    // Set initial selected value
+    const selectedUnit = getUnitByCode(selectedUnitCode);
+    if (selectedUnit) {
+      selectedElement.textContent = selectedUnit.name;
+      selectedElement.dataset.value = selectedUnit.code;
+    }
+    
+    // Add categories and units
+    Object.keys(unitCategories).forEach(category => {
+      const units = unitCategories[category];
+      
+      // Add category header
+      const categoryElement = document.createElement('div');
+      categoryElement.className = 'custom-dropdown-categories';
+      categoryElement.textContent = category;
+      optionsContainer.appendChild(categoryElement);
+      
+      // Add units in this category
+      units.forEach(unit => {
+        const option = document.createElement('div');
+        option.className = 'custom-dropdown-option';
+        option.dataset.value = unit.code;
+        option.textContent = unit.name;
+        
+        if (unit.code === selectedUnitCode) {
+          option.classList.add('selected');
+        }
+        
+        option.addEventListener('click', function() {
+          selectedElement.textContent = this.textContent;
+          selectedElement.dataset.value = this.dataset.value;
+          
+          // Update selected class
+          dropdown.querySelectorAll('.custom-dropdown-option').forEach(opt => {
+            opt.classList.remove('selected');
+          });
+          this.classList.add('selected');
+          
+          closeAllDropdowns();
+          
+          // If media or file size selected, automatically run conversion
+          const mediaUnits = ['floppy', 'cd', 'dvd', 'dvd_dl', 'bd', 'bd_dl', 'bd_xl', 
+                              'mp3', 'photo', 'doc', 'email', 'raw_photo', 'hd_movie', '4k_movie'];
+          if (mediaUnits.includes(selectedElement.dataset.value)) {
+            // If it's a file/media unit, set input to 1 (one unit)
+            if (selectedElement === fromUnitSelected) {
+              inputValue.value = 1;
+              performConversion();
+            }
+          }
+        });
+        
+        optionsContainer.appendChild(option);
+      });
+    });
+  }
+  
+  // Close all dropdowns function
+  function closeAllDropdowns() {
+    document.querySelectorAll('.custom-dropdown-options').forEach(dropdown => {
+      dropdown.style.display = 'none';
+      
+      // Reset search and filters when closing
+      const searchInput = dropdown.querySelector('.custom-dropdown-search input');
+      if (searchInput) {
+        searchInput.value = '';
+        resetUnitVisibility(dropdown);
+      }
+    });
+    
+    document.querySelectorAll('.custom-dropdown-selected').forEach(selected => {
+      selected.classList.remove('active');
+    });
+  }
+  
+  // Reset unit visibility
+  function resetUnitVisibility(dropdown) {
+    // Show all categories
+    dropdown.querySelectorAll('.custom-dropdown-categories').forEach(category => {
+      category.style.display = 'block';
+    });
+    
+    // Show all options
+    dropdown.querySelectorAll('.custom-dropdown-option').forEach(option => {
+      option.style.display = 'block';
+    });
+  }
+  
+  // Add event listeners
+  convertBtn.addEventListener('click', performConversion);
+  clearHistoryBtn.addEventListener('click', clearHistory);
+  inputValue.addEventListener('keypress', function(e) {
+    if (e.key === 'Enter') {
+      performConversion();
+    }
+  });
+
+  // Listen for notation change
+  notationRadios.forEach(radio => {
+    radio.addEventListener('change', function() {
+      // If we've already done a conversion, recalculate with new notation
+      if (resultDiv.classList.contains('show')) {
+        performConversion();
+      }
+    });
+  });
+  
+  // Function to get current notation system
+  function getNotationSystem() {
+    return document.querySelector('input[name="notation"]:checked').value;
+  }
+  
+  // Function to adjust conversion factors for binary notation
+  function getAdjustedConversionFactors() {
+    const notationSystem = getNotationSystem();
+    let factors = {...toBytes}; // Clone the original factors
+    
+    // If binary notation selected, adjust SI units to match binary values
+    if (notationSystem === 'binary') {
+      // For SI units using binary prefixes
+      factors['KB'] = 1024;           // Kilobyte as 2^10
+      factors['MB'] = 1048576;        // Megabyte as 2^20
+      factors['GB'] = 1073741824;     // Gigabyte as 2^30
+      factors['TB'] = 1099511627776;  // Terabyte as 2^40
+      factors['PB'] = 1125899906842624; // Petabyte as 2^50
+      factors['EB'] = 1152921504606846976; // Exabyte as 2^60
+      // ZB and YB are too large for direct representation, would need BigInt
+    }
+    
+    return factors;
+  }
+  
+  // Function to perform conversion with high precision
+  function performConversion() {
+    const input = parseFloat(inputValue.value);
+    const errorElement = document.getElementById('input-error');
+    
+    if (isNaN(input)) {
+      inputValue.classList.add('error');
+      errorElement.style.display = 'block';
+      return;
+    } else {
+      inputValue.classList.remove('error');
+      errorElement.style.display = 'none';
+    }
+
+    const from = fromUnitSelected.dataset.value;
+    const to = toUnitSelected.dataset.value;
+    const places = parseInt(decimalPlacesSelected.dataset.value || 2);
+    
+    // Get conversion factors adjusted for notation system
+    const conversionFactors = getAdjustedConversionFactors();
+    
+    // For maximum precision, convert via base unit (bytes)
+    // input → bytes → output
+    const bytes = input * conversionFactors[from];
+    const result = bytes / conversionFactors[to];
+    
+    // Check for NaN or Infinity
+    if (isNaN(result) || !isFinite(result)) {
+      resultText.textContent = "Conversion error - Please check the conversion factors";
+      formulaText.textContent = "Make sure all units have proper conversion factors defined";
+      resultDiv.classList.add('show');
+      return;
+    }
+    
+    // Format with requested decimal places
+    const formattedResult = result.toFixed(places);
+    
+    // Generate formula text
+    const formulaHtml = generateFormulaText(from, to, input, formattedResult);
+    
+    resultText.textContent = `${input} ${unitNames[from] || from} = ${formattedResult} ${unitNames[to] || to}`;
+    formulaText.innerHTML = `Formula: ${formulaHtml}`;
+    
+    // Add special notes for certain units
+    if (unitNotes[from] || unitNotes[to]) {
+      contextText.innerHTML = unitNotes[from] || unitNotes[to];
+      contextText.style.display = 'block';
+    } else {
+      contextText.style.display = 'none';
+    }
+    
+    // Display practical equivalents for the result
+    displayPracticalEquivalents(formattedResult, to);
+    
+    resultDiv.classList.add('show');
+    
+    // Add to history
+    addToHistory(input, from, to, formattedResult);
+  }
+  
+  // Function to generate formula text
+  function generateFormulaText(from, to, input, result) {
+    const notationSystem = getNotationSystem();
+    const conversionFactors = getAdjustedConversionFactors();
+    
+    // Get the values for the formula
+    const fromFactor = conversionFactors[from];
+    const toFactor = conversionFactors[to];
+    
+    // Basic formula: input × (fromFactor ÷ toFactor)
+    let formula = '';
+    
+    if (fromFactor === toFactor) {
+      // Direct conversion with no factor difference
+      formula = `${input} × 1 = ${result}`;
+    } else if (fromFactor > toFactor) {
+      // Converting to a larger unit
+      const conversionRatio = fromFactor / toFactor;
+      formula = `${input} × (${fromFactor} ÷ ${toFactor}) = ${input} × (1 ÷ ${conversionRatio.toLocaleString()}) = ${result}`;
+    } else {
+      // Converting to a smaller unit
+      const conversionRatio = toFactor / fromFactor;
+      formula = `${input} × (${fromFactor} ÷ ${toFactor}) = ${input} × (1 ÷ ${conversionRatio.toLocaleString()}) = ${result}`;
+    }
+    
+    return formula;
+  }
+  
+  // Function to display practical equivalents
+  function displayPracticalEquivalents(result, unit) {
+    const resultValue = parseFloat(result);
+    practicalEquivalents.innerHTML = '';
+    
+    // Only show for common units
+    const commonUnits = ['B', 'KB', 'MB', 'GB', 'TB', 'PB'];
+    if (!commonUnits.includes(unit)) {
+      practicalEquivalents.innerHTML = '<p>No practical equivalents available for this unit.</p>';
+      return;
+    }
+    
+    // Get the reference data for the unit
+    const references = practicalReferences[unit] || [];
+    
+    if (references.length === 0) {
+      practicalEquivalents.innerHTML = '<p>No practical equivalents available for this unit.</p>';
+      return;
+    }
+    
+    // Create HTML for each reference
+    const html = references.map(ref => {
+      return `<div class="practical-item">
+        <span class="practical-value">${resultValue.toLocaleString()} ${unitNames[unit]}</span>
+        <span class="practical-equals">≈</span>
+        <span class="practical-description">${ref.description}</span>
+      </div>`;
+    }).join('');
+    
+    practicalEquivalents.innerHTML = html;
+  }
+  
+  // Function to add a conversion to history
+  function addToHistory(input, from, to, result) {
+    const timestamp = new Date().toLocaleTimeString();
+    const historyItem = {
+      timestamp,
+      input,
+      from,
+      to,
+      result,
+      notation: getNotationSystem()
+    };
+    
+    // Add to beginning of array to show most recent first
+    conversionHistory.unshift(historyItem);
+    
+    // Keep only the last 10 items
+    if (conversionHistory.length > 10) {
+      conversionHistory.pop();
+    }
+    
+    // Save to localStorage
+    localStorage.setItem('storageConverterHistory', JSON.stringify(conversionHistory));
+    
+    // Update display
+    displayHistory();
+  }
+  
+  // Function to display history
+  function displayHistory() {
+    if (conversionHistory.length === 0) {
+      historyList.innerHTML = '<p class="empty-history">No conversion history yet.</p>';
+      return;
+    }
+    
+    const html = conversionHistory.map(item => {
+      const fromUnit = getUnitByCode(item.from);
+      const toUnit = getUnitByCode(item.to);
+      
+      return `<div class="history-item">
+        <div class="history-time">${item.timestamp}</div>
+        <div class="history-conversion">
+          <span class="history-value">${item.input} ${fromUnit ? fromUnit.name : item.from}</span>
+          <span class="history-equals">=</span>
+          <span class="history-result">${item.result} ${toUnit ? toUnit.name : item.to}</span>
+        </div>
+        <div class="history-notation">${item.notation === 'binary' ? 'Binary Notation' : 'Decimal Notation'}</div>
+      </div>`;
+    }).join('');
+    
+    historyList.innerHTML = html;
+    
+    // Add click handlers to history items to load them
+    const historyItems = historyList.querySelectorAll('.history-item');
+    historyItems.forEach((item, index) => {
+      item.addEventListener('click', function() {
+        loadHistoryItem(index);
+      });
+    });
+  }
+  
+  // Function to load a history item
+  function loadHistoryItem(index) {
+    const item = conversionHistory[index];
+    
+    inputValue.value = item.input;
+    fromUnitSelected.dataset.value = item.from;
+    toUnitSelected.dataset.value = item.to;
+    
+    // Update unit dropdown displays
+    const fromUnit = getUnitByCode(item.from);
+    const toUnit = getUnitByCode(item.to);
+    
+    if (fromUnit) fromUnitSelected.textContent = fromUnit.name;
+    if (toUnit) toUnitSelected.textContent = toUnit.name;
+    
+    // Set notation radio
+    document.getElementById(item.notation).checked = true;
+    
+    // Perform conversion
+    performConversion();
+  }
+  
+  // Function to clear history
+  function clearHistory() {
+    conversionHistory = [];
+    localStorage.removeItem('storageConverterHistory');
+    displayHistory();
+  }
+});
+  </script>
+</body>
+</html>
