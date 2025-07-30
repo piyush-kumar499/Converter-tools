@@ -2,8 +2,8 @@
 
 **Author: Piyush Kumar**
 
-![Weight Converter]()
-![Weight Converter]()
+![Weight Converter](https://github.com/piyush-kumar499/Converter-tools/blob/9ff156e722666fc4436d49d040dd201e94efa96d/Weight%20and%20Mass%20Converter/IMG_20250730_082827.jpg)
+![Weight Converter](https://github.com/piyush-kumar499/Converter-tools/blob/9ff156e722666fc4436d49d040dd201e94efa96d/Weight%20and%20Mass%20Converter/Screenshot_2025-07-30-08-28-53-77_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 ## About
 
