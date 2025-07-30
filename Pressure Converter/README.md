@@ -1,7 +1,7 @@
 # Pressure Converter
 
-![Pressure Converter Screenshot](screenshots/pressure-converter-main.png)
-![Conversion Result](screenshots/pressure-converter-result.png)
+![Pressure Converter Screenshot](https://github.com/piyush-kumar499/Converter-tools/blob/1777969b990509405b089a2d3233691e8c011172/Pressure%20Converter/IMG_20250730_152716.jpg)
+![Conversion Result](https://github.com/piyush-kumar499/Converter-tools/blob/1777969b990509405b089a2d3233691e8c011172/Pressure%20Converter/Screenshot_2025-07-30-15-27-40-72_40deb401b9ffe8e1df2f1cc5ba480b12.jpg)
 
 A comprehensive web-based pressure unit converter that supports over 30 different pressure units across multiple categories including SI units, Imperial/US units, meteorological units, and more.
 
